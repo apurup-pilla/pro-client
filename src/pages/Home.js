@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Box, Container, Paper, Select, MenuItem, Button, CardContent, Grid, Card, IconButton, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, Typography, Avatar, Box, Container, Paper, Select, MenuItem, Button, CardContent, Grid, Card, IconButton, Tooltip, Tab, Tabs } from '@mui/material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import LogoutIcon from '@mui/icons-material/Logout';
-import AddPurchase from '../components/AddPurchase.modal';
+import AddInvoice from '../components/AddInvoice.modal';
 
-import Dashboard from '../components/Dashboard';
+import Invoices from '../components/Invoices';
 import Partners from '../components/Partners';
 
 
@@ -16,7 +16,7 @@ const user = {
 
 const Home = () => {
 
-  const [tab, setTab] = useState('DASHBOARD')
+  const [tab, setTab] = useState('INVOICES')
 
 
   return (
@@ -26,35 +26,35 @@ const Home = () => {
         position="static"
         sx={{ backgroundColor: '#2196f34D', color: 'black', boxShadow: 'none' }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex' }}>
-            <Typography
-              variant="h6"
-              sx={{
-                mr: '20px',
-                cursor: 'pointer',
-                fontWeight: tab === 'DASHBOARD' ? 'bold' : 'normal',
-                color: tab === 'DASHBOARD' ? '#1976d2' : 'black',
-                borderBottom: tab === 'DASHBOARD' ? '2px solid #1976d2' : '2px solid transparent',
-                pb: 0.5
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', }}>
+          <Box sx={{ width: '100%', bgcolor: 'background.paper', backgroundColor: '#2196f3D' }}>
+            <Tabs
+              value={tab}
+              onChange={(a, b) => setTab(b)}
+
+              textColor="primary"
+              indicatorColor="primary"
+              TabIndicatorProps={{
+                sx: { height: '2px' },
               }}
-              onClick={() => setTab('DASHBOARD')}
             >
-              Dashboard
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                cursor: 'pointer',
-                fontWeight: tab === 'PARTNERS' ? 'bold' : 'normal',
-                color: tab === 'PARTNERS' ? '#1976d2' : 'black',
-                borderBottom: tab === 'PARTNERS' ? '2px solid #1976d2' : '2px solid transparent',
-                pb: 0.5
-              }}
-              onClick={() => setTab('PARTNERS')}
-            >
-              Partners
-            </Typography>
+              <Tab
+                label="Invoices"
+                value="INVOICES"
+                sx={{ textTransform: 'none', fontSize: 16,  fontWeight: tab === 'INVOICES' ? 'bold' : 'normal', }}
+              />
+              <Tab
+                label="Partners"
+                value="PARTNERS"
+                sx={{ textTransform: 'none', fontSize: 16,  fontWeight: tab === 'PARTNERS' ? 'bold' : 'normal', }}
+              />
+               <Tab
+                label="Expense Reports"
+                value="EXPENSE"
+                sx={{ textTransform: 'none', fontSize: 16,  fontWeight: tab === 'EXPENSE' ? 'bold' : 'normal', }}
+              />
+
+            </Tabs>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -64,7 +64,7 @@ const Home = () => {
             </Box>
             <Avatar alt="Profile" />
             <Tooltip title="Logout" arrow>
-              <IconButton onClick={()=>{}} sx={{ color: 'black', ml: 3 }}>
+              <IconButton onClick={() => { }} sx={{ color: 'black', ml: 3 }}>
                 <LogoutIcon />
               </IconButton>
             </Tooltip>
@@ -72,7 +72,7 @@ const Home = () => {
         </Toolbar>
       </AppBar>
 
-      {tab === 'DASHBOARD' && <Dashboard />}
+      {tab === 'INVOICES' && <Invoices />}
       {tab === 'PARTNERS' && <Partners />}
     </Box>
   );
