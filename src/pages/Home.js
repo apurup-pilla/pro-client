@@ -6,6 +6,7 @@ import AddInvoice from '../components/AddInvoice.modal';
 
 import Invoices from '../components/Invoices';
 import Partners from '../components/Partners';
+import ExpenseReports from '../components/ExpenseReports';
 
 
 const user = {
@@ -74,6 +75,7 @@ const Home = () => {
 
       {tab === 'INVOICES' && <Invoices />}
       {tab === 'PARTNERS' && <Partners />}
+      {tab === 'EXPENSE' && <ExpenseReports />}
     </Box>
   );
 };
