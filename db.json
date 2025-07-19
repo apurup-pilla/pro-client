@@ -1,0 +1,38 @@
+{
+  "Invoices": [
+    {
+      "id": 1,
+      "invoiceNumber": "INV-A001",
+      "invoiceDate": "2025-07-01T00:00:00",
+      "dueDate": "2025-07-10T00:00:00",
+      "supplierName": "Alpha Supplies",
+      "accountHead": "Office Supplies",
+      "description": "Stationery purchase",
+      "amount": 200,
+      "gst": 20,
+      "totalAmount": 220,
+      "paymentDate": "2025-07-05T00:00:00",
+      "preview": true,
+      "storeId": 1,
+      "userRole": "Owner",
+      "userId": 101
+    },
+    {
+      "id": 2,
+      "invoiceNumber": "INV-A002",
+      "invoiceDate": "2025-07-02T00:00:00",
+      "dueDate": "2025-07-11T00:00:00",
+      "supplierName": "Beta Traders",
+      "accountHead": "Cleaning Supplies",
+      "description": "Cleaning items",
+      "amount": 300,
+      "gst": 30,
+      "totalAmount": 330,
+      "paymentDate": "2025-07-06T00:00:00",
+      "preview": false,
+      "storeId": 2,
+      "userRole": "Manager",
+      "userId": 101
+    }
+  ]
+}

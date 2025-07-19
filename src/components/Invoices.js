@@ -5,11 +5,11 @@ import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Too
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddInvoiceModal from './AddInvoice.modal';
 import DeleteInvoiceModal from './DeleteInvoice.modal';
 import { data } from './utils';
-
+import axios from "axios";
 
 
 
@@ -23,6 +23,22 @@ function Invoices() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
+  const [invoicesData , setInvoicesData] = useState([])
+
+  const fetchInvoices = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5093/Invoices`);
+
+      console.log("Invoices:", response.data);
+      setInvoicesData(response.data)
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
@@ -119,7 +135,8 @@ function Invoices() {
 
   const table = useMaterialReactTable({
     columns,
-    data: data,
+    // data: data,
+    data : invoicesData, 
     enableSorting: false,
     enablePagination: false,
     enableDensityToggle: false,
@@ -168,10 +185,10 @@ function Invoices() {
     <>
       <Box sx={{ margin: '20px', mt: 5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Box sx={{ display: 'flex'}}>
+          <Box sx={{ display: 'flex' }}>
             <FormControl
               size="small"
-              sx={{ minWidth: 150, mr : 2 }}
+              sx={{ minWidth: 150, mr: 2 }}
             >
               <InputLabel
                 sx={{
