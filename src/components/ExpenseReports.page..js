@@ -12,7 +12,7 @@ import { data } from './utils';
 
 
 
-function ExpenseReports() {
+function ExpenseReportsPage() {
 
   const [selectedSuppliers, setSelectedSuppliers] = useState([]);
   const [selectedSites, setSelectedSites] = useState([]);
@@ -243,4 +243,4 @@ function ExpenseReports() {
   )
 }
 
-export default ExpenseReports;
+export default ExpenseReportsPage;

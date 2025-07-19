@@ -4,9 +4,9 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddInvoice from '../components/AddInvoice.modal';
 
-import Invoices from '../components/Invoices';
-import Partners from '../components/Partners';
-import ExpenseReports from '../components/ExpenseReports';
+import InvoicesPage from '../components/Invoices.page';
+import PartnersPage from '../components/Partners.page';
+import ExpenseReportsPage from '../components/ExpenseReports.page.';
 
 
 const user = {
@@ -17,7 +17,7 @@ const user = {
 
 const Home = () => {
 
-  const [tab, setTab] = useState('INVOICES')
+  const [tab, setTab] = useState('INVOICES')  
 
 
   return (
@@ -44,11 +44,11 @@ const Home = () => {
                 value="INVOICES"
                 sx={{ textTransform: 'none', fontSize: 16,  fontWeight: tab === 'INVOICES' ? 'bold' : 'normal', }}
               />
-              <Tab
+              {/* <Tab
                 label="Partners"
                 value="PARTNERS"
                 sx={{ textTransform: 'none', fontSize: 16,  fontWeight: tab === 'PARTNERS' ? 'bold' : 'normal', }}
-              />
+              /> */}
                <Tab
                 label="Expense Reports"
                 value="EXPENSE"
@@ -73,9 +73,9 @@ const Home = () => {
         </Toolbar>
       </AppBar>
 
-      {tab === 'INVOICES' && <Invoices />}
-      {tab === 'PARTNERS' && <Partners />}
-      {tab === 'EXPENSE' && <ExpenseReports />}
+      {tab === 'INVOICES' && <InvoicesPage />}
+      {tab === 'PARTNERS' && <PartnersPage />}
+      {tab === 'EXPENSE' && <ExpenseReportsPage />}
     </Box>
   );
 };

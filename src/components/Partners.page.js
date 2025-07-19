@@ -29,7 +29,7 @@ const users = [
 
 
 
-function Partners() {
+function PartnersPage() {
 
   const [open, setOpen] = useState(false);
 
@@ -86,4 +86,4 @@ function Partners() {
 }
 
 
-export default Partners;
+export default PartnersPage;

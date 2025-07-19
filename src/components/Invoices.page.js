@@ -10,11 +10,12 @@ import AddInvoiceModal from './AddInvoice.modal';
 import DeleteInvoiceModal from './DeleteInvoice.modal';
 import { data } from './utils';
 import axios from "axios";
+import DateFilter from './DateFilter';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 
 
 
-
-function Invoices() {
+function InvoicesPage() {
 
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
@@ -23,7 +24,7 @@ function Invoices() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
-  const [invoicesData , setInvoicesData] = useState([])
+  const [invoicesData, setInvoicesData] = useState([])
 
   const fetchInvoices = async () => {
     try {
@@ -135,8 +136,8 @@ function Invoices() {
 
   const table = useMaterialReactTable({
     columns,
-    // data: data,
-    data : invoicesData, 
+    data: data,
+    // data : invoicesData, 
     enableSorting: false,
     enablePagination: false,
     enableDensityToggle: false,
@@ -181,11 +182,25 @@ function Invoices() {
     }
 
   })
+
+
+
+  const [range, setRange] = useState({ startDate: null, endDate: null });
+
+  const handleDateChange = (range) => {
+    setRange(range);
+    console.log("Selected Range:", range);
+  };
+
+  console.log("Selected Range:", range);
+
   return (
     <>
       <Box sx={{ margin: '20px', mt: 5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+
           <Box sx={{ display: 'flex' }}>
+
             <FormControl
               size="small"
               sx={{ minWidth: 150, mr: 2 }}
@@ -211,6 +226,9 @@ function Invoices() {
                 <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
               </Select>
             </FormControl>
+
+
+
             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box sx={{ display: 'flex', gap: 2, width: "350px" }}>
                 <DatePicker
@@ -221,23 +239,24 @@ function Invoices() {
                     textField: {
                       placeholder: 'Select start date',
                       size: 'small',
-                    },
-                  }}
-                />
-                <DatePicker
-                  label="Date To"
-                  value={toDate}
+                      },
+                      }}
+                      />
+                      <DatePicker
+                      label="Date To"
+                      value={toDate}
                   onChange={(newValue) => setToDate(newValue)}
                   slotProps={{
                     textField: {
                       placeholder: 'Select end date',
                       size: 'small',
-                    },
+                      },
                   }}
-                />
-              </Box>
-            </LocalizationProvider> */}
+                  />
+                  </Box>
+                  </LocalizationProvider> */}
 
+            <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} />
           </Box>
           <Button
             variant="contained"
@@ -253,6 +272,7 @@ function Invoices() {
             }}
             onClick={() => setOpen(true)}
           >
+            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{mr: '5px'}}/>
             Add Invoice
           </Button>
 
@@ -267,4 +287,4 @@ function Invoices() {
   )
 }
 
-export default Invoices;
+export default InvoicesPage;
