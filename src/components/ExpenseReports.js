@@ -15,19 +15,69 @@ import { data } from './utils';
 function ExpenseReports() {
 
   const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+  const [selectedSites, setSelectedSites] = useState([]);
 
   const supplierOptions = [
     'Suppliers1',
     'Suppliers2',
     'Suppliers3',
     'Suppliers4',
+    'Suppliers5',
+    'Suppliers6',
+    'Suppliers7',
+    'Suppliers8',
+    'Suppliers9',
+    'Suppliers10',
+    'Suppliers11',
+    'Suppliers12',
+    'Suppliers13',
+    'Suppliers14',
+    'Suppliers15',
+    'Suppliers16',
+    'Suppliers17',
+    'Suppliers18',
+    'Suppliers19',
+    'Suppliers20',
   ];
+
+  const siteOptions = [
+    'Site1',
+    'Site2',
+    'Site3',
+    'Site4',
+    'Site5',
+    'Site6',
+    'Site7',
+    'Site8',
+    'Site9',
+    'Site10',
+    'Site11',
+    'Site12',
+    'Site13',
+    'Site14',
+    'Site15',
+    'Site16',
+    'Site17',
+    'Site18',
+    'Site19',
+    'Site20',
+  ];
+
+
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
     setSelectedSuppliers(typeof value === 'string' ? value.split(',') : value);
+  };
+
+
+  const handleChangeSites = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedSites(typeof value === 'string' ? value.split(',') : value);
   };
 
 
@@ -92,40 +142,98 @@ function ExpenseReports() {
   return (
     <>
       <Box sx={{ margin: '20px', mt: 5 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          {/* //justifyContent: 'space-between', */}
 
-          <FormControl size="small" sx={{ minWidth: 250 }}>
-            <InputLabel
-              sx={{
-                fontSize: 16,
-                // fontWeight: 600,
-                color: '#333',
-                // top: '-8px',
-              }}
-            >
-              Supplier Name
-            </InputLabel>
-            <Select
-              multiple
-              value={selectedSuppliers}
-              onChange={handleChange}
-              input={<OutlinedInput label="Supplier Name" />}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} size="small" />
-                  ))}
-                </Box>
-              )}
-            >
-              {supplierOptions.map((name) => (
-                <MenuItem key={name} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Box sx={{ width: '40%', pr: 2 }}>
+            <FormControl size="small" sx={{ minWidth: 250 }}>
+              <InputLabel
+                sx={{
+                  fontSize: 16,
+                  color: '#333',
+                }}
+              >
+                Supplier Name
+              </InputLabel>
+              <Select
+                multiple
+                value={selectedSuppliers}
+                onChange={handleChange}
+                input={<OutlinedInput label="Supplier Name" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 
+                  }}>
+                    {selected.map((value) => (
+                      <Chip
+                        key={value}
+                        label={value}
+                        size="small"
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onDelete={(e) => {
+                          e.stopPropagation();
+                          setSelectedSuppliers((prev) => prev.filter((val) => val !== value));
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+              >
+                {supplierOptions.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ width: '40%', pr: 2 }} >
+            <FormControl size="small" sx={{ minWidth: 250 }}>
+              <InputLabel
+                sx={{
+                  fontSize: 16,
+                  // fontWeight: 600,
+                  color: '#333',
+                  // top: '-8px',
+                }}
+              >
+                Site Name
+              </InputLabel>
+              <Select
+                multiple
+                value={selectedSites}
+                onChange={handleChangeSites}
+                input={<OutlinedInput label="Site Name" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} size="small"
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onDelete={(e) => {
+                          e.stopPropagation();
+                          setSelectedSites((prev) => prev.filter((val) => val !== value));
+                        }}
 
+                      />
+                    ))}
+                  </Box>
+                )}
+              >
+                {siteOptions.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ width: 'auto', pl: '5%' }} >
+            <Typography>
+              Total Expense (AUD)
+            </Typography>
+            <Typography sx={{color : '#1976d2', fontSize : 28}}>
+              87347
+            </Typography>
+          </Box>
         </Box>
         <Box >
           <MaterialReactTable table={table} />
