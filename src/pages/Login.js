@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     navigate('/home');
   };
+
+  const isFormValid = username.trim() !== '' && password.trim() !== '';
 
   return (
     <Box
@@ -32,7 +37,6 @@ const Login = () => {
         top: '-150px',
         left: '-150px'
       }} />
-
       <Box sx={{
         position: 'absolute',
         width: '400px',
@@ -43,7 +47,6 @@ const Login = () => {
         bottom: '-100px',
         right: '-100px'
       }} />
-
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -57,7 +60,7 @@ const Login = () => {
             transition={{ duration: 0.5, delay: 0.5 }}
           >
             <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Welcome Back
+              Six Peers Pty Ltd
             </Typography>
             <Typography variant="body1" align="center" sx={{ mb: 3 }}>
               Please login to your account
@@ -69,10 +72,12 @@ const Login = () => {
             transition={{ duration: 0.7, delay: 1 }}
           >
             <TextField
-              label="Email"
+              label="Username"
               variant="outlined"
               fullWidth
               sx={{ mb: 3 }}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               label="Password"
@@ -80,6 +85,8 @@ const Login = () => {
               variant="outlined"
               fullWidth
               sx={{ mb: 3 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </motion.div>
           <motion.div
@@ -87,12 +94,13 @@ const Login = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, delay: 1.5 }}
           >
-            <Button 
-              variant="contained" 
-              color="primary" 
-              fullWidth 
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
               size="large"
               sx={{ borderRadius: '8px' }}
+              disabled={!isFormValid}
               onClick={handleLogin}
             >
               Login

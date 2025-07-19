@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Box, Container, Paper, Select, MenuItem, Button, CardContent, Grid, Card, FormControl, InputLabel, Tooltip, IconButton } from '@mui/material';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import AddInvoiceModal from './AddInvoice.modal';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
+import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { useState } from 'react';
+import AddInvoiceModal from './AddInvoice.modal';
 import DeleteInvoiceModal from './DeleteInvoice.modal';
 import { data } from './utils';
 
@@ -18,6 +19,10 @@ function Invoices() {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
   const [openDelete, setOpenDelete] = useState(false);
+
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
@@ -51,9 +56,8 @@ function Invoices() {
     },
     { accessorKey: 'paymentDate', header: 'Payment Date', size: 100, },
     { accessorKey: 'directDebit', header: 'Direct Debit', size: 100, },
-    {
-      accessorKey: 'paymentType', header: 'Payment Type', size: 100, enableHiding: true,
-    },
+    { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
+    { accessorKey: 'invoiceType', header: 'Invoice Type', size: 100, },
     {
       accessorKey: 'preview',
       header: 'Preview',
@@ -103,7 +107,7 @@ function Invoices() {
           <Tooltip title="Delete">
             <IconButton
               color="error"
-              onClick={() => {setOpenDelete(row.original)}}
+              onClick={() => { setOpenDelete(row.original) }}
             >
               <DeleteOutlineOutlinedIcon fontSize="small" />
             </IconButton>
@@ -114,8 +118,8 @@ function Invoices() {
   ];
 
   const table = useMaterialReactTable({
-    columns, 
-    data : data,
+    columns,
+    data: data,
     enableSorting: false,
     enablePagination: false,
     enableDensityToggle: false,
@@ -124,6 +128,9 @@ function Invoices() {
     initialState: {
       columnVisibility: {
         siteName: false,
+        invoiceId: false,
+        accountHead: false,
+        description: false
       },
     },
 
@@ -161,33 +168,60 @@ function Invoices() {
     <>
       <Box sx={{ margin: '20px', mt: 5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <FormControl
-            size="small"
-            sx={{ minWidth: 150 }}
-          >
-            <InputLabel
-              sx={{
-                fontSize: 20,
-                fontWeight: 600,
-                color: '#333',
-                top: '-12px',
-              }}
+          <Box sx={{ display: 'flex'}}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: 150, mr : 2 }}
             >
-              Site Name
-            </InputLabel>
-            <Select
-              labelId="location-label"
-              defaultValue="All"
-              label="Location"
-              sx={{ width: '200px' }}
-            >
-              <MenuItem value="All">All sites</MenuItem>
-              <MenuItem value="BP_LAWNTON">BP LAWNTON</MenuItem>
-              <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
-            </Select>
-          </FormControl>
+              <InputLabel
+                sx={{
+                  fontSize: 20,
+                  fontWeight: 600,
+                  color: '#333',
+                  top: '-12px',
+                }}
+              >
+                Site Name
+              </InputLabel>
+              <Select
+                labelId="location-label"
+                defaultValue="All"
+                label="Location"
+                sx={{ width: '200px' }}
+              >
+                <MenuItem value="All">All sites</MenuItem>
+                <MenuItem value="BP_LAWNTON">BP LAWNTON</MenuItem>
+                <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
+              </Select>
+            </FormControl>
+            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Box sx={{ display: 'flex', gap: 2, width: "350px" }}>
+                <DatePicker
+                  label="Date From"
+                  value={fromDate}
+                  onChange={(newValue) => setFromDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      placeholder: 'Select start date',
+                      size: 'small',
+                    },
+                  }}
+                />
+                <DatePicker
+                  label="Date To"
+                  value={toDate}
+                  onChange={(newValue) => setToDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      placeholder: 'Select end date',
+                      size: 'small',
+                    },
+                  }}
+                />
+              </Box>
+            </LocalizationProvider> */}
 
-
+          </Box>
           <Button
             variant="contained"
             color="primary"
@@ -211,7 +245,7 @@ function Invoices() {
         </Box>
       </Box>
       <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} />
-      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} onDelete={() => {}} selectedData={selectedData}  />
+      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} onDelete={() => { }} selectedData={selectedData} />
     </>
   )
 }

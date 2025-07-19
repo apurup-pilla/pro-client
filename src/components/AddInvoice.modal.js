@@ -146,6 +146,11 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
                 onChange={(date) => handleChange('invoiceDate', date)}
                 renderInput={(params) => <TextField fullWidth size="small" {...params} />}
                 sx={{ mr: 2, width: '250px' }}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
               />
 
               <DatePicker
@@ -154,6 +159,11 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
                 value={form.dueDate}
                 onChange={(date) => handleChange('dueDate', date)}
                 renderInput={(params) => <TextField fullWidth size="small" {...params} />}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
               />
             </Box>
 
@@ -250,6 +260,11 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
                 value={form.paymentDate}
                 onChange={(date) => handleChange('paymentDate', date)}
                 renderInput={(params) => <TextField sx={{}} fullWidth size="small" {...params} />}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
               />
 
             </Box>
@@ -269,7 +284,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
                   <MenuItem value={false}>No</MenuItem>
                 </Select>
               </FormControl>
-{/* 
+              {/* 
               <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                 <InputLabel id="demo-select-small-label">Payment Type</InputLabel>
                 <Select

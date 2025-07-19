@@ -14,7 +14,8 @@ export const data = [
     preview: true,
     siteName: 'BP LAWNTON',
     directDebit: 'Yes',
-    paymentType: 'CASH'
+    paymentType: 'CASH',
+    invoiceType: 'Original'
   },
   {
     invoiceId: 1002,
@@ -31,7 +32,8 @@ export const data = [
     preview: false,
     siteName: 'BP HIGHFIELDS',
     directDebit: 'No',
-    paymentType: 'CARD'
+    paymentType: 'CARD',
+    invoiceType: 'Dummy'
   },
   {
     invoiceId: 1003,
@@ -48,7 +50,8 @@ export const data = [
     preview: true,
     siteName: 'BP LAWNTON',
     directDebit: 'Yes',
-    paymentType: 'CARD'
+    paymentType: 'CARD',
+    invoiceType: 'Original'
   },
   {
     invoiceId: 1004,
@@ -65,7 +68,8 @@ export const data = [
     preview: false,
     siteName: 'BP HIGHFIELDS',
     directDebit: 'No',
-    paymentType: 'CASH'
+    paymentType: 'CASH',
+    invoiceType: 'Dummy'
   },
   {
     invoiceId: 1005,
@@ -82,7 +86,8 @@ export const data = [
     preview: false,
     siteName: 'BP LAWNTON',
     directDebit: 'Yes',
-    paymentType: 'CARD'
+    paymentType: 'CARD',
+    invoiceType: 'Original'
   },
   {
     invoiceId: 1006,
@@ -99,7 +104,8 @@ export const data = [
     preview: true,
     siteName: 'BP HIGHFIELDS',
     directDebit: 'No',
-    paymentType: 'CASH'
+    paymentType: 'CASH',
+    invoiceType: 'Dummy'
   },
   {
     invoiceId: 1007,
@@ -116,7 +122,8 @@ export const data = [
     preview: true,
     siteName: 'BP LAWNTON',
     directDebit: 'Yes',
-    paymentType: 'CASH'
+    paymentType: 'CASH',
+    invoiceType: 'Original'
   },
   {
     invoiceId: 1008,
@@ -133,7 +140,8 @@ export const data = [
     preview: true,
     siteName: 'BP HIGHFIELDS',
     directDebit: 'No',
-    paymentType: 'CARD'
+    paymentType: 'CARD',
+    invoiceType: 'Dummy'
   },
   {
     invoiceId: 1009,
@@ -150,7 +158,8 @@ export const data = [
     preview: true,
     siteName: 'BP LAWNTON',
     directDebit: 'Yes',
-    paymentType: 'CASH'
+    paymentType: 'CASH',
+    invoiceType: 'Original'
   },
   {
     invoiceId: 1010,
@@ -167,6 +176,7 @@ export const data = [
     preview: true,
     siteName: 'BP HIGHFIELDS',
     directDebit: 'No',
-    paymentType: 'CARD'
+    paymentType: 'CARD',
+    invoiceType: 'Dummy'
   }
 ];
