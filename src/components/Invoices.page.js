@@ -28,7 +28,7 @@ function InvoicesPage() {
 
   const fetchInvoices = async () => {
     try {
-      const response = await axios.get(`http://localhost:5093/Invoices`);
+      const response = await axios.get(`http://localhost:5093/api/Invoices/user/2`);
 
       console.log("Invoices:", response.data);
       setInvoicesData(response.data)
@@ -54,6 +54,13 @@ function InvoicesPage() {
       accessorKey: 'amount',
       header: (<>
         Amount <br />(AUD)
+      </>),
+      size: 60,
+    },
+        {
+      accessorKey: 'nonGSTAmount',
+      header: (<>
+        Non GST Amount <br />(AUD)
       </>),
       size: 60,
     },
