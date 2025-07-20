@@ -226,25 +226,39 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
               <TextField
                 label="amount (AUD)"
                 type="number"
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.amount}
                 onChange={(e) => handleChange('amount', e.target.value)}
               />
 
               <TextField
+                label="Non GST Amount (AUD)"
+                type="number"
+                sx={{ width: '250px' }}
+                size="small"
+              // value={form.gst}
+              // onChange={(e) => handleChange('gst', e.target.value)}
+              />
+
+
+            </Box>
+
+            <Box sx={{ my: 2, display: 'flex' }}>
+              <TextField
                 label="GST (AUD)"
                 type="number"
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.gst}
                 onChange={(e) => handleChange('gst', e.target.value)}
               />
 
+
               <TextField
                 label="Total Amount"
                 type="number"
-
+                sx={{ width: '250px' }}
                 size="small"
                 disabled
                 value={form.totalAmount}

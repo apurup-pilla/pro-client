@@ -20,6 +20,7 @@ function InvoicesPage() {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
   const [openDelete, setOpenDelete] = useState(false);
+  const [selectedSite, setSelectedSite] = useState('')
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
@@ -54,6 +55,13 @@ function InvoicesPage() {
       accessorKey: 'amount',
       header: (<>
         Amount <br />(AUD)
+      </>),
+      size: 60,
+    },
+    {
+      accessorKey: 'nonGstAmount',
+      header: (<>
+        Non GST Amount <br />(AUD)
       </>),
       size: 60,
     },
@@ -201,33 +209,27 @@ function InvoicesPage() {
 
           <Box sx={{ display: 'flex' }}>
 
-            <FormControl
-              size="small"
-              sx={{ minWidth: 150, mr: 2 }}
-            >
-              <InputLabel
-                sx={{
+            <FormControl sx={{ minWidth: 120, mr: 2 }} size="small">
+              <InputLabel id="demo-select-small-label"
+                sx={selectedSite ? {
                   fontSize: 20,
                   fontWeight: 600,
                   color: '#333',
                   top: '-12px',
-                }}
-              >
-                Site Name
-              </InputLabel>
+                } : {}}
+              >Site Name</InputLabel>
               <Select
-                labelId="location-label"
-                defaultValue="All"
-                label="Location"
-                sx={{ width: '200px' }}
+                sx={{ width: '200px', height: '40px' }}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedSite}
+                label="Site Name"
+                onChange={(e) => setSelectedSite(e.target.value)}
               >
-                <MenuItem value="All">All sites</MenuItem>
                 <MenuItem value="BP_LAWNTON">BP LAWNTON</MenuItem>
                 <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
               </Select>
             </FormControl>
-
-
 
             {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box sx={{ display: 'flex', gap: 2, width: "350px" }}>
@@ -272,7 +274,7 @@ function InvoicesPage() {
             }}
             onClick={() => setOpen(true)}
           >
-            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{mr: '5px'}}/>
+            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{ mr: '5px' }} />
             Add Invoice
           </Button>
 
