@@ -12,10 +12,14 @@ import { data } from './utils';
 import axios from "axios";
 import DateFilter from './DateFilter';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import { deleteInvoice, getInvoiceByStoreId } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 
 
 
 function InvoicesPage() {
+
+  const { authUser } = useAuth()
 
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
@@ -28,13 +32,10 @@ function InvoicesPage() {
   const [invoicesData, setInvoicesData] = useState([])
 
   const fetchInvoices = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5093/Invoices`);
-
-      console.log("Invoices:", response.data);
-      setInvoicesData(response.data)
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
+    if (authUser?.siteId) {
+      const invoiceRes = await getInvoiceByStoreId(authUser?.siteId)
+      console.log("Invoices:", invoiceRes);
+      setInvoicesData(invoiceRes?.data);
     }
   };
 
@@ -197,10 +198,7 @@ function InvoicesPage() {
 
   const handleDateChange = (range) => {
     setRange(range);
-    console.log("Selected Range:", range);
   };
-
-  console.log("Selected Range:", range);
 
   return (
     <>
@@ -231,33 +229,6 @@ function InvoicesPage() {
               </Select>
             </FormControl>
 
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box sx={{ display: 'flex', gap: 2, width: "350px" }}>
-                <DatePicker
-                  label="Date From"
-                  value={fromDate}
-                  onChange={(newValue) => setFromDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      placeholder: 'Select start date',
-                      size: 'small',
-                      },
-                      }}
-                      />
-                      <DatePicker
-                      label="Date To"
-                      value={toDate}
-                  onChange={(newValue) => setToDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      placeholder: 'Select end date',
-                      size: 'small',
-                      },
-                  }}
-                  />
-                  </Box>
-                  </LocalizationProvider> */}
-
             <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} />
           </Box>
           <Button
@@ -283,8 +254,8 @@ function InvoicesPage() {
           <MaterialReactTable table={table} />
         </Box>
       </Box>
-      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} />
-      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} onDelete={() => { }} selectedData={selectedData} />
+      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} fetchInvoices={fetchInvoices} />
+      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} fetchInvoices={fetchInvoices} />
     </>
   )
 }

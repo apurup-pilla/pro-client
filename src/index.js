@@ -8,11 +8,14 @@ import 'jquery'; // jQuery is used internally
 import 'moment';
 import 'daterangepicker';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { AuthProvider } from './context/AuthContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </BrowserRouter>
 );
