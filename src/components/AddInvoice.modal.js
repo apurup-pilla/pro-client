@@ -12,10 +12,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import { createInvoice, updateInvoice } from '../api/api';
 
-const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
+const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => {
+
   const [form, setForm] = useState({
-    invoiceNumber: selectedData?.invoiceNumber || '',
+    ...selectedData,
+    invoiceNumber: '',
     invoiceDate: null,
     dueDate: null,
     supplierName: '',
@@ -26,38 +29,36 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
     totalAmount: '',
     paymentDate: null,
     preview: null,
+    paymentType: null,
+    invoiceType: null,
+    nonGSTAmount: null,
+    directDebit: null,
+    siteId: null
   });
 
 
   useEffect(() => {
     setForm({
+      ...selectedData,
       invoiceNumber: selectedData?.invoiceNumber || '',
-      siteName: selectedData?.siteName || '',
-      invoiceDate: null,
-      dueDate: null,
+      invoiceDate: selectedData?.invoiceDate || null,
+      dueDate: selectedData?.dueDate || null,
       supplierName: selectedData?.supplierName || '',
       accountHead: selectedData?.accountHead || '',
       description: selectedData?.description || '',
       amount: selectedData?.amount || '',
       gst: selectedData?.gst || '',
       totalAmount: selectedData?.totalAmount || '',
-      paymentDate: null,
-      directDebit: '',
-      paymentType: '',
-      preview: selectedData?.preview || null,
-    })
+      paymentDate: selectedData?.paymentDate || null,
+      preview: selectedData?.preview ?? null,
+      paymentType: selectedData?.paymentType ?? null,
+      invoiceType: selectedData?.invoiceType ?? null,
+      nonGSTAmount: selectedData?.nonGSTAmount ?? null,
+      directDebit: selectedData?.directDebit ?? null,
+      siteId: selectedData?.siteId ?? null
+    });
+  }, [selectedData]);
 
-  }, [selectedData])
-
-  // const handleChange = (field, value) => {
-  //   setForm(prev => ({
-  //     ...prev,
-  //     [field]: value,
-  //     ...(field === 'amount' || field === 'gst') && {
-  //       totalAmount: Number(field === 'amount' ? value : form.amount) + Number(field === 'gst' ? value : form.gst)
-  //     }
-  //   }));
-  // };
 
   const handleChange = (field, value) => {
     setForm((prev) => {
@@ -85,11 +86,20 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
 
 
   const handleFileChange = (e) => {
-    handleChange('preview', e.target.files[0]);
+    // handleChange('preview', e.target.files[0]);
+    handleChange('preview', true);
+
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log('Submitted Invoice:', form);
+
+    if (selectedData?.id) {
+      await updateInvoice(form)
+    } else {
+      await createInvoice(form)
+    }
+    fetchInvoices()
     handleClose();
   };
 
@@ -123,9 +133,9 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
               <Autocomplete
                 freeSolo
                 options={['BP LAWNTON', 'BP HIGHFIELDS']}
-                value={form.siteName}
-                onChange={(event, newValue) => handleChange('siteName', newValue)}
-                onInputChange={(event, newInputValue) => handleChange('siteName', newInputValue)}
+                value={form.siteId}
+                onChange={(event, newValue) => handleChange('siteId', 1)}
+                onInputChange={(event, newInputValue) => handleChange('siteId', 1)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -137,7 +147,6 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
               />
 
             </Box>
-
 
             <Box >
               <DatePicker
@@ -169,7 +178,6 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
 
 
             <Box sx={{ my: 2, display: 'flex' }}>
-
               <Autocomplete
                 freeSolo
                 options={['Amazon', 'Flipkart', 'Tata Consultancy', 'Infosys']}
@@ -226,25 +234,39 @@ const AddInvoiceModal = ({ open, handleClose, selectedData }) => {
               <TextField
                 label="amount (AUD)"
                 type="number"
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.amount}
                 onChange={(e) => handleChange('amount', e.target.value)}
               />
 
               <TextField
+                label="Non GST Amount (AUD)"
+                type="number"
+                sx={{ width: '250px' }}
+                size="small"
+                value={form.nonGSTAmount}
+                onChange={(e) => handleChange('nonGSTAmount', e.target.value)}
+              />
+
+
+            </Box>
+
+            <Box sx={{ my: 2, display: 'flex' }}>
+              <TextField
                 label="GST (AUD)"
                 type="number"
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.gst}
                 onChange={(e) => handleChange('gst', e.target.value)}
               />
 
+
               <TextField
                 label="Total Amount"
                 type="number"
-
+                sx={{ width: '250px' }}
                 size="small"
                 disabled
                 value={form.totalAmount}

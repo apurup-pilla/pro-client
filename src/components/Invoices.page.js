@@ -12,14 +12,19 @@ import { data } from './utils';
 import axios from "axios";
 import DateFilter from './DateFilter';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import { deleteInvoice, getInvoiceByStoreId } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 
 
 
 function InvoicesPage() {
 
+  const { authUser } = useAuth()
+
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
   const [openDelete, setOpenDelete] = useState(false);
+  const [selectedSite, setSelectedSite] = useState('')
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
@@ -27,13 +32,10 @@ function InvoicesPage() {
   const [invoicesData, setInvoicesData] = useState([])
 
   const fetchInvoices = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5093/api/Invoices/user/2`);
-
-      console.log("Invoices:", response.data);
-      setInvoicesData(response.data)
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
+    if (authUser?.siteId) {
+      const invoiceRes = await getInvoiceByStoreId(authUser?.siteId)
+      console.log("Invoices:", invoiceRes);
+      setInvoicesData(invoiceRes?.data);
     }
   };
 
@@ -59,6 +61,13 @@ function InvoicesPage() {
     },
         {
       accessorKey: 'nonGSTAmount',
+      header: (<>
+        Non GST Amount <br />(AUD)
+      </>),
+      size: 60,
+    },
+    {
+      accessorKey: 'nonGstAmount',
       header: (<>
         Non GST Amount <br />(AUD)
       </>),
@@ -196,10 +205,7 @@ function InvoicesPage() {
 
   const handleDateChange = (range) => {
     setRange(range);
-    console.log("Selected Range:", range);
   };
-
-  console.log("Selected Range:", range);
 
   return (
     <>
@@ -208,60 +214,27 @@ function InvoicesPage() {
 
           <Box sx={{ display: 'flex' }}>
 
-            <FormControl
-              size="small"
-              sx={{ minWidth: 150, mr: 2 }}
-            >
-              <InputLabel
-                sx={{
+            <FormControl sx={{ minWidth: 120, mr: 2 }} size="small">
+              <InputLabel id="demo-select-small-label"
+                sx={selectedSite ? {
                   fontSize: 20,
                   fontWeight: 600,
                   color: '#333',
                   top: '-12px',
-                }}
-              >
-                Site Name
-              </InputLabel>
+                } : {}}
+              >Site Name</InputLabel>
               <Select
-                labelId="location-label"
-                defaultValue="All"
-                label="Location"
-                sx={{ width: '200px' }}
+                sx={{ width: '200px', height: '40px' }}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedSite}
+                label="Site Name"
+                onChange={(e) => setSelectedSite(e.target.value)}
               >
-                <MenuItem value="All">All sites</MenuItem>
                 <MenuItem value="BP_LAWNTON">BP LAWNTON</MenuItem>
                 <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
               </Select>
             </FormControl>
-
-
-
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box sx={{ display: 'flex', gap: 2, width: "350px" }}>
-                <DatePicker
-                  label="Date From"
-                  value={fromDate}
-                  onChange={(newValue) => setFromDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      placeholder: 'Select start date',
-                      size: 'small',
-                      },
-                      }}
-                      />
-                      <DatePicker
-                      label="Date To"
-                      value={toDate}
-                  onChange={(newValue) => setToDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      placeholder: 'Select end date',
-                      size: 'small',
-                      },
-                  }}
-                  />
-                  </Box>
-                  </LocalizationProvider> */}
 
             <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} />
           </Box>
@@ -279,7 +252,7 @@ function InvoicesPage() {
             }}
             onClick={() => setOpen(true)}
           >
-            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{mr: '5px'}}/>
+            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{ mr: '5px' }} />
             Add Invoice
           </Button>
 
@@ -288,8 +261,8 @@ function InvoicesPage() {
           <MaterialReactTable table={table} />
         </Box>
       </Box>
-      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} />
-      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} onDelete={() => { }} selectedData={selectedData} />
+      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} fetchInvoices={fetchInvoices} />
+      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} fetchInvoices={fetchInvoices} />
     </>
   )
 }

@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { authUser } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUserSession } = useAuth()
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    navigate('/home');
+  const handleLogin = async () => {
+    const userRes = await authUser({ username, password })
+    
+    setUserSession(userRes)
+    navigate('/home')
   };
 
   const isFormValid = username.trim() !== '' && password.trim() !== '';
