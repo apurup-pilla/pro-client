@@ -59,13 +59,6 @@ function InvoicesPage() {
       </>),
       size: 60,
     },
-        {
-      accessorKey: 'nonGSTAmount',
-      header: (<>
-        Non GST Amount <br />(AUD)
-      </>),
-      size: 60,
-    },
     {
       accessorKey: 'nonGstAmount',
       header: (<>
