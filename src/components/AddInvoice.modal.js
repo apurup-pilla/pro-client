@@ -13,9 +13,19 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { createInvoice, updateInvoice } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 
 const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => {
 
+  const { authUser = {} } = useAuth()
+  const { sites = [] } = authUser
+
+  // let sitesObject = {}
+  // authUser?.sites?.forEach(i => {
+  //   sitesObject[i?.name] = i.id
+  // });
+
+  // console.log('sitesObject', sitesObject)
   const [form, setForm] = useState({
     ...selectedData,
     invoiceNumber: '',
@@ -28,13 +38,15 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
     gst: '',
     totalAmount: '',
     paymentDate: null,
-    preview: null,
+    preview: true,
     paymentType: null,
-    invoiceType: null,
+    invoiceType: 'Original',
     nonGSTAmount: null,
     directDebit: null,
     siteId: null
   });
+
+  console.log('form==', form)
 
 
   useEffect(() => {
@@ -50,9 +62,9 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
       gst: selectedData?.gst || '',
       totalAmount: selectedData?.totalAmount || '',
       paymentDate: selectedData?.paymentDate || null,
-      preview: selectedData?.preview ?? null,
+      preview: selectedData?.preview ?? true,
       paymentType: selectedData?.paymentType ?? null,
-      invoiceType: selectedData?.invoiceType ?? null,
+      invoiceType: selectedData?.invoiceType ?? "Original",
       nonGSTAmount: selectedData?.nonGSTAmount ?? null,
       directDebit: selectedData?.directDebit ?? null,
       siteId: selectedData?.siteId ?? null
@@ -94,10 +106,15 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
   const handleSubmit = async () => {
     console.log('Submitted Invoice:', form);
 
+    let payload = {
+      ...form,
+      siteId: sites?.find(i => i.name == form?.siteId)?.id
+    }
+    console.log('Submitted Payload:', payload);
     if (selectedData?.id) {
-      await updateInvoice(form)
+      await updateInvoice(payload)
     } else {
-      await createInvoice(form)
+      await createInvoice(payload)
     }
     fetchInvoices()
     handleClose();
@@ -132,10 +149,10 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
 
               <Autocomplete
                 freeSolo
-                options={['BP LAWNTON', 'BP HIGHFIELDS']}
+                options={sites?.map(i => i?.name)}
                 value={form.siteId}
-                onChange={(event, newValue) => handleChange('siteId', 1)}
-                onInputChange={(event, newInputValue) => handleChange('siteId', 1)}
+                onChange={(event, newValue) => handleChange('siteId', newValue)}
+                onInputChange={(event, newInputValue) => handleChange('siteId', newInputValue)}
                 renderInput={(params) => (
                   <TextField
                     {...params}

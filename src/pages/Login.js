@@ -14,12 +14,13 @@ const Login = () => {
 
   const handleLogin = async () => {
     const userRes = await authUser({ username, password })
+    console.log('userRes', userRes)
     if (userRes.message) {
       alert(userRes.response.data);
     } else {
       // setUserSession(userRes)
       setUserSession({ 
-        "Username": username,
+        "username": username,
         "ownedSiteId": userRes.filter(site => site.roleInSite === 'Owner')[0]?.siteId || null,
         "sites": userRes.map(site => ({
           id: site.siteId,

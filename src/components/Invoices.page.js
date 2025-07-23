@@ -24,22 +24,26 @@ function InvoicesPage() {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
   const [openDelete, setOpenDelete] = useState(false);
-  const [sitesData, setSitesData] = useState([]);
-  const [selectedSite, setSelectedSite] = useState(0)
+  const [sitesData, setSitesData] = useState((authUser?.sites || []));
+  const [selectedSite, setSelectedSite] = useState(authUser?.ownedSiteId || 1)
+
+  console.log('selectedSite', selectedSite)
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
   const [invoicesData, setInvoicesData] = useState([]);
 
+  console.log('authUser', authUser)
+
   const fetchInvoices = async (siteId) => {
     const invoiceRes = await getInvoiceByStoreId(siteId)
     console.log("Invoices:", invoiceRes);
-    setInvoicesData(invoiceRes?.data);
+    Array.isArray(invoiceRes) && setInvoicesData(invoiceRes);
   };
 
   const updateSiteDetails = async () => {
-    const siteNamePlaceholder ={
+    const siteNamePlaceholder = {
       id: 0,
       name: 'Select Site'
     }
@@ -48,21 +52,27 @@ function InvoicesPage() {
   }
 
   useEffect(() => {
-    updateSiteDetails();
-    if(authUser?.ownedSiteId){
-      fetchInvoices(authUser.ownedSiteId)
-    };
-  }, []);
+    // if(authUser?.ownedSiteId){
+    fetchInvoices(selectedSite)
+    // };
+  }, [selectedSite]);
+
+
 
   const handleSiteChange = (e) => {
-    const siteId =  e.target.value;
+    const siteId = e.target.value;
     setSelectedSite(siteId);
     fetchInvoices(selectedSite);
   }
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
-    { accessorKey: 'siteName', header: 'Site Name', size: 100, },
+    {
+      accessorKey: 'siteName', header: 'Site Name', size: 120,
+      Cell: ({ row }) => (
+        sitesData?.find(i => i?.id == row?.original?.siteId)?.name
+      )
+    },
     { accessorKey: 'invoiceDate', header: 'Invoice Date', size: 100, },
     { accessorKey: 'invoiceNumber', header: 'Invoice Number', size: 100, },
     { accessorKey: 'dueDate', header: 'Due Date', size: 100, },
@@ -77,7 +87,7 @@ function InvoicesPage() {
       size: 60,
     },
     {
-      accessorKey: 'nonGstAmount',
+      accessorKey: 'nonGSTAmount',
       header: (<>
         Non GST Amount <br />(AUD)
       </>),
@@ -162,8 +172,8 @@ function InvoicesPage() {
 
   const table = useMaterialReactTable({
     columns,
-    data: data,
-    // data : invoicesData, 
+    // data: [],
+    data: invoicesData,
     enableSorting: false,
     enablePagination: false,
     enableDensityToggle: false,
