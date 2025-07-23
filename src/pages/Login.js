@@ -14,9 +14,21 @@ const Login = () => {
 
   const handleLogin = async () => {
     const userRes = await authUser({ username, password })
-    
-    setUserSession(userRes)
-    navigate('/home')
+    if (userRes.message) {
+      alert(userRes.response.data);
+    } else {
+      // setUserSession(userRes)
+      setUserSession({ 
+        "Username": username,
+        "ownedSiteId": userRes.filter(site => site.roleInSite === 'Owner')[0]?.siteId || null,
+        "sites": userRes.map(site => ({
+          id: site.siteId,
+          name: site.siteName
+        }))
+      });
+      navigate('/home')
+    }
+
   };
 
   const isFormValid = username.trim() !== '' && password.trim() !== '';

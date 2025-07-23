@@ -24,24 +24,41 @@ function InvoicesPage() {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null)
   const [openDelete, setOpenDelete] = useState(false);
-  const [selectedSite, setSelectedSite] = useState('')
+  const [sitesData, setSitesData] = useState([]);
+  const [selectedSite, setSelectedSite] = useState(0)
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
-  const [invoicesData, setInvoicesData] = useState([])
+  const [invoicesData, setInvoicesData] = useState([]);
 
-  const fetchInvoices = async () => {
-    if (authUser?.siteId) {
-      const invoiceRes = await getInvoiceByStoreId(authUser?.siteId)
-      console.log("Invoices:", invoiceRes);
-      setInvoicesData(invoiceRes?.data);
-    }
+  const fetchInvoices = async (siteId) => {
+    const invoiceRes = await getInvoiceByStoreId(siteId)
+    console.log("Invoices:", invoiceRes);
+    setInvoicesData(invoiceRes?.data);
   };
 
+  const updateSiteDetails = async () => {
+    const siteNamePlaceholder ={
+      id: 0,
+      name: 'Select Site'
+    }
+    const sitesData = [siteNamePlaceholder, ...(authUser?.sites || [])]
+    setSitesData(sitesData);
+  }
+
   useEffect(() => {
-    fetchInvoices();
+    updateSiteDetails();
+    if(authUser?.ownedSiteId){
+      fetchInvoices(authUser.ownedSiteId)
+    };
   }, []);
+
+  const handleSiteChange = (e) => {
+    const siteId =  e.target.value;
+    setSelectedSite(siteId);
+    fetchInvoices(selectedSite);
+  }
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
@@ -222,10 +239,13 @@ function InvoicesPage() {
                 id="demo-simple-select"
                 value={selectedSite}
                 label="Site Name"
-                onChange={(e) => setSelectedSite(e.target.value)}
+                onChange={handleSiteChange}
               >
-                <MenuItem value="BP_LAWNTON">BP LAWNTON</MenuItem>
-                <MenuItem value="BP_HIGHFIELDS">BP HIGHFIELDS</MenuItem>
+                {sitesData.map((site) => (
+                  <MenuItem value={site.id} >
+                    {site.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
