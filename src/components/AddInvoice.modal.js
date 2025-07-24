@@ -15,7 +15,7 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { createInvoice, updateInvoice } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 
-const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => {
+const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selectedSite }) => {
 
   const { authUser = {} } = useAuth()
   const { sites = [] } = authUser
@@ -43,7 +43,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
     invoiceType: 'Original',
     nonGSTAmount: null,
     directDebit: null,
-    siteId: null
+    siteId: null,
   });
 
   console.log('form==', form)
@@ -53,21 +53,21 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
     setForm({
       ...selectedData,
       invoiceNumber: selectedData?.invoiceNumber || '',
-      invoiceDate: selectedData?.invoiceDate || null,
-      dueDate: selectedData?.dueDate || null,
+      invoiceDate: selectedData?.invoiceDate ? dayjs(selectedData?.invoiceDate) : null,
+      dueDate: selectedData?.dueDate ? dayjs(selectedData?.dueDate) : null,
       supplierName: selectedData?.supplierName || '',
       accountHead: selectedData?.accountHead || '',
       description: selectedData?.description || '',
       amount: selectedData?.amount || '',
       gst: selectedData?.gst || '',
       totalAmount: selectedData?.totalAmount || '',
-      paymentDate: selectedData?.paymentDate || null,
+      paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
       preview: selectedData?.preview ?? true,
       paymentType: selectedData?.paymentType ?? null,
       invoiceType: selectedData?.invoiceType ?? "Original",
       nonGSTAmount: selectedData?.nonGSTAmount ?? null,
       directDebit: selectedData?.directDebit ?? null,
-      siteId: selectedData?.siteId ?? null
+      siteId: selectedData?.siteId ? sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
     });
   }, [selectedData]);
 
@@ -104,19 +104,18 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
   };
 
   const handleSubmit = async () => {
-    console.log('Submitted Invoice:', form);
-
     let payload = {
       ...form,
       siteId: sites?.find(i => i.name == form?.siteId)?.id
     }
-    console.log('Submitted Payload:', payload);
-    if (selectedData?.id) {
+
+    if (selectedData?.invoiceId) {
+
       await updateInvoice(payload)
     } else {
       await createInvoice(payload)
     }
-    fetchInvoices()
+    fetchInvoices(selectedSite)
     handleClose();
   };
 
@@ -319,8 +318,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
                   label="Direct Debit"
                   onChange={(event) => handleChange('directDebit', event.target.value)}
                 >
-                  <MenuItem value={true}>Yes</MenuItem>
-                  <MenuItem value={false}>No</MenuItem>
+                  <MenuItem value='Yes'>Yes</MenuItem>
+                  <MenuItem value='No'>No</MenuItem>
                 </Select>
               </FormControl>
               {/* 
@@ -349,8 +348,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices }) => 
                   label="Payment Type"
                   onChange={(event) => handleChange('paymentType', event.target.value)}
                 >
-                  <MenuItem value='cash'>Cash</MenuItem>
-                  <MenuItem value='card'>Card</MenuItem>
+                  <MenuItem value='Cash'>Cash</MenuItem>
+                  <MenuItem value='Card'>Card</MenuItem>
                 </Select>
               </FormControl>
             </Box>

@@ -34,7 +34,7 @@ export const createInvoice = async (invoiceData) => {
 
 export const updateInvoice = async (invoiceData) => {
   try {
-    const response = await axios.put(`${BASE_URL}/Invoices/${invoiceData?.id}`, invoiceData);
+    const response = await axios.put(`${BASE_URL}/Invoices/${invoiceData?.invoiceId}`, invoiceData);
     return response.data;
   } catch (error) {
     console.error('Updating invoice failed:', error);

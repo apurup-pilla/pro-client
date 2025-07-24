@@ -9,14 +9,14 @@ import {
 } from '@mui/material';
 import { deleteInvoice } from '../api/api';
 
-const DeleteInvoiceModal = ({ open, handleClose, fetchInvoices }) => {
-  const { invoiceId, id = null } = open
+const DeleteInvoiceModal = ({ open, handleClose, fetchInvoices , selectedSite }) => {
+  const { invoiceId, id = null, invoiceNumber } = open
 
   const onInvoiceDelete = async () => {
-    if (id) {
-      await deleteInvoice(id)
-      console.log("invoiceeeeeee Deleteddddddd")
-      fetchInvoices();
+    if (invoiceId) {
+      await deleteInvoice(invoiceId)
+      fetchInvoices(selectedSite);
+      handleClose()
     }
   }
 
@@ -42,7 +42,7 @@ const DeleteInvoiceModal = ({ open, handleClose, fetchInvoices }) => {
           Are you sure to delete the invoice?
         </Typography>
         <Typography sx={{ fontWeight: 'bold', mt: 1 }}>
-          Invoice ID: {invoiceId}
+          invoice Number: {invoiceNumber}
         </Typography>
       </DialogContent>
       <DialogActions sx={{ m: 1 }}>

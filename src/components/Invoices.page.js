@@ -284,8 +284,8 @@ function InvoicesPage() {
           <MaterialReactTable table={table} />
         </Box>
       </Box>
-      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} fetchInvoices={fetchInvoices} />
-      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} fetchInvoices={fetchInvoices} />
+      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} fetchInvoices={fetchInvoices} selectedSite={selectedSite} />
+      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} fetchInvoices={fetchInvoices} selectedSite={selectedSite} />
     </>
   )
 }
