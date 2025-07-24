@@ -27,6 +27,12 @@ function InvoicesPage() {
   const [sitesData, setSitesData] = useState((authUser?.sites || []));
   const [selectedSite, setSelectedSite] = useState(authUser?.ownedSiteId || 1)
 
+  useEffect(() => {
+    setSelectedSite(authUser?.ownedSiteId || authUser?.sites?.[0]?.id )
+    setSitesData(authUser?.sites || []);
+  }, [authUser])
+
+
   console.log('selectedSite', selectedSite)
 
   const [fromDate, setFromDate] = useState(null);
@@ -52,9 +58,9 @@ function InvoicesPage() {
   }
 
   useEffect(() => {
-    // if(authUser?.ownedSiteId){
+    if(selectedSite){
     fetchInvoices(selectedSite)
-    // };
+    };
   }, [selectedSite]);
 
 
@@ -136,7 +142,7 @@ function InvoicesPage() {
                     boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
                   },
                 }}
-              > 
+              >
                 Upload
               </Button>
               :
