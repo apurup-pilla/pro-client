@@ -18,8 +18,6 @@ import { useAuth } from '../context/AuthContext';
 const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selectedSite }) => {
 
   const { authUser = {} } = useAuth()
-  const { sites = [] } = authUser
-
   // let sitesObject = {}
   // authUser?.sites?.forEach(i => {
   //   sitesObject[i?.name] = i.id
@@ -27,23 +25,23 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
   // console.log('sitesObject', sitesObject)
   const [form, setForm] = useState({
-    ...selectedData,
-    invoiceNumber: '',
-    invoiceDate: null,
-    dueDate: null,
-    supplierName: '',
-    accountHead: '',
-    description: '',
-    amount: '',
-    gst: '',
-    totalAmount: '',
-    paymentDate: null,
-    preview: true,
-    paymentType: null,
-    invoiceType: 'Original',
-    nonGSTAmount: null,
-    directDebit: null,
-    siteId: null,
+    // ...selectedData,
+    // invoiceNumber: '',
+    // invoiceDate: null,
+    // dueDate: null,
+    // supplierName: '',
+    // accountHead: '',
+    // description: '',
+    // amount: '',
+    // gst: '',
+    // totalAmount: '',
+    // paymentDate: null,
+    // preview: true,
+    // paymentType: null,
+    // invoiceType: '',
+    // nonGSTAmount: null,
+    // directDebit: null,
+    // siteId: null,
   });
 
   console.log('form==', form)
@@ -62,12 +60,12 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
       gst: selectedData?.gst || '',
       totalAmount: selectedData?.totalAmount || '',
       paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
-      preview: selectedData?.preview ?? true,
+      preview: selectedData?.preview ?? false,
       paymentType: selectedData?.paymentType ?? null,
-      invoiceType: selectedData?.invoiceType ?? "Original",
+      invoiceType: selectedData?.invoiceType ?? "",
       nonGSTAmount: selectedData?.nonGSTAmount ?? null,
       directDebit: selectedData?.directDebit ?? null,
-      siteId: selectedData?.siteId ? sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
+      siteId: selectedData?.siteId ? authUser?.sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
     });
   }, [selectedData]);
 
@@ -82,14 +80,22 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
       if (field === 'amount') {
         const amount = Number(value);
         const gst = Math.round(amount * 0.1);
+        const nonGSTAmount = Number(prev.nonGSTAmount)
         updated.gst = gst || '';
-        updated.totalAmount = amount + gst;
+        updated.totalAmount = amount + gst + nonGSTAmount;
       }
 
       else if (field === 'gst') {
         const gst = Number(value);
         const amount = Number(prev.amount);
-        updated.totalAmount = amount + gst;
+        const nonGSTAmount = Number(prev.nonGSTAmount)
+        updated.totalAmount = amount + gst + nonGSTAmount;
+      }
+
+      else if (field === 'nonGSTAmount') {
+        const gst = Number(prev.gst);
+        const amount = Number(prev.amount);
+        updated.totalAmount = amount + gst + Number(value);
       }
 
       return updated;
@@ -106,7 +112,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
   const handleSubmit = async () => {
     let payload = {
       ...form,
-      siteId: sites?.find(i => i.name == form?.siteId)?.id
+      siteId: authUser?.sites?.find(i => i.name == form?.siteId)?.id
     }
 
     if (selectedData?.invoiceId) {
@@ -116,6 +122,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
       await createInvoice(payload)
     }
     fetchInvoices(selectedSite)
+    setForm({})
     handleClose();
   };
 
@@ -148,7 +155,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
               <Autocomplete
                 freeSolo
-                options={sites?.map(i => i?.name)}
+                options={authUser?.sites?.map(i => i?.name)}
                 value={form.siteId}
                 onChange={(event, newValue) => handleChange('siteId', newValue)}
                 onInputChange={(event, newInputValue) => handleChange('siteId', newInputValue)}
@@ -294,7 +301,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
               <DatePicker
                 label="Payment Date"
-                sx={{ width: '250px', }}
+                sx={{ width: '250px', mr: 2 }}
                 value={form.paymentDate}
                 onChange={(date) => handleChange('paymentDate', date)}
                 renderInput={(params) => <TextField sx={{}} fullWidth size="small" {...params} />}
@@ -304,6 +311,21 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                   },
                 }}
               />
+
+              <FormControl sx={{ minWidth: 120 }} size="small" >
+                <InputLabel id="demo-simple-select-label">Invoice Type</InputLabel>
+                <Select
+                  sx={{ width: '250px', height: '40px' }}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.invoiceType}
+                  label="Invoice Type"
+                  onChange={(event) => handleChange('invoiceType', event.target.value)}
+                >
+                  <MenuItem value='Original'>Original</MenuItem>
+                  <MenuItem value='Dummy'>Dummy</MenuItem>
+                </Select>
+              </FormControl>
 
             </Box>
 
@@ -322,21 +344,6 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                   <MenuItem value='No'>No</MenuItem>
                 </Select>
               </FormControl>
-              {/* 
-              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <InputLabel id="demo-select-small-label">Payment Type</InputLabel>
-                <Select
-                  sx={{ width: '250px', height: '40px' }}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={form.paymentType}
-                  label="Payment Type"
-                  onChange={(event) => handleChange('paymentType', event.target.value)}
-                >
-                  <MenuItem value='cash'>Cash</MenuItem>
-                  <MenuItem value='card'>Card</MenuItem>
-                </Select>
-              </FormControl> */}
 
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <InputLabel id="demo-select-small-label">Payment Type</InputLabel>
@@ -379,7 +386,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
           </Grid>
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={handleClose} color="">Cancel</Button>
+          <Button onClick={() => { handleClose(); setForm({}) }} color="">Cancel</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">{selectedData ? 'Edit' : 'Add'}</Button>
         </DialogActions>
       </Dialog>

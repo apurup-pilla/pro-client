@@ -1,3 +1,42 @@
+
+
+
+
+
+
+import CryptoJS from 'crypto-js';
+
+const SECRET_KEY = 'b0b6724a87daed6d8d4c7a439d592e49'; 
+
+export const encryptData = (data) => {
+  return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+};
+
+export const decryptData = (cipherText) => {
+  try {
+    const bytes = CryptoJS.AES.decrypt(cipherText, SECRET_KEY);
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(decrypted);
+  } catch (error) {
+    console.error('Decryption failed:', error);
+    return null;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const data = [
   {
     invoiceId: 1001,

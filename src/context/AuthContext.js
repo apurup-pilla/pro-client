@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { decryptData } from '../components/utils';
 
 
 const AuthContext = createContext();
@@ -6,21 +7,29 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
 
+useEffect(() => {
+  const encryptedUser = localStorage.getItem('user');
+  let user = null;
+
+  try {
+    user = encryptedUser ? decryptData(encryptedUser) : null;
+    if (user) {
+      setAuthUser(user);
+    }
+  } catch (error) {
+    console.error('Failed to decrypt user:', error);
+  }
+}, []);
+
+
   const setUserSession = (userDetails) => {
     setAuthUser(userDetails);
-    localStorage.setItem('authUser', JSON.stringify(userDetails));
-  };
-
-  const clearUserSession = () => {
-    setAuthUser(null);
-    localStorage.removeItem('authUser');
   };
 
   return (
     <AuthContext.Provider value={{
       authUser,
       setUserSession,
-      clearUserSession,
       isAuthenticated: !!authUser
     }}>
       {children}

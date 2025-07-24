@@ -120,55 +120,90 @@ function InvoicesPage() {
           {row.original.preview ? (
             <Typography sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}>View<OpenInNewOutlinedIcon sx={{ fontSize: 18, mb: '-4px', ml: "2px" }} /> </Typography>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                height: 30,
-                width: 60,
-                fontSize: 12,
-                borderRadius: '8px',
-                textTransform: 'none',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-                '&:hover': {
-                  backgroundColor: '#1976d2',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                },
-              }}
-            >
-              Upload
-            </Button>
+            authUser?.ownedSiteId === selectedSite ?
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  height: 30,
+                  width: 60,
+                  fontSize: 12,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+                  '&:hover': {
+                    backgroundColor: '#1976d2',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                  },
+                }}
+              > 
+                Upload
+              </Button>
+              :
+              <div></div>
 
           )}
         </>
       )
     },
-    {
-      accessorKey: 'actions',
-      header: 'Actions',
-      size: 100,
-      Cell: ({ row }) => (
-        <>
-          <Tooltip title="Edit">
-            <IconButton
-              color="primary"
-              onClick={() => { setSelectedData(row.original); setOpen(true) }}
-            >
-              <EditOutlinedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton
-              color="error"
-              onClick={() => { setOpenDelete(row.original) }}
-            >
-              <DeleteOutlineOutlinedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </>
-      ),
-    },
+    // {
+    //   accessorKey: 'actions',
+    //   header: 'Actions',
+    //   size: 100,
+    //   Cell: ({ row }) => (
+    //     <>
+    //       <Tooltip title="Edit">
+    //         <IconButton
+    //           color="primary"
+    //           onClick={() => { setSelectedData(row.original); setOpen(true) }}
+    //         >
+    //           <EditOutlinedIcon fontSize="small" />
+    //         </IconButton>
+    //       </Tooltip>
+    //       <Tooltip title="Delete">
+    //         <IconButton
+    //           color="error"
+    //           onClick={() => { setOpenDelete(row.original) }}
+    //         >
+    //           <DeleteOutlineOutlinedIcon fontSize="small" />
+    //         </IconButton>
+    //       </Tooltip>
+    //     </>
+    //   ),
+    // },
   ];
+
+  if (authUser?.ownedSiteId === selectedSite) {
+    columns.push(
+      {
+        accessorKey: 'actions',
+        header: 'Actions',
+        size: 100,
+        Cell: ({ row }) => (
+          <>
+            <Tooltip title="Edit">
+              <IconButton
+                color="primary"
+                onClick={() => { setSelectedData(row.original); setOpen(true) }}
+              >
+                <EditOutlinedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                color="error"
+                onClick={() => { setOpenDelete(row.original) }}
+              >
+                <DeleteOutlineOutlinedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        ),
+      },
+
+    )
+  }
+
 
   const table = useMaterialReactTable({
     columns,
@@ -261,23 +296,26 @@ function InvoicesPage() {
 
             <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} />
           </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-              '&:hover': {
-                backgroundColor: '#1976d2',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-              },
-            }}
-            onClick={() => setOpen(true)}
-          >
-            <AddCircleOutlineOutlinedIcon color='#fffff' sx={{ mr: '5px' }} />
-            Add Invoice
-          </Button>
+          {
+            authUser?.ownedSiteId === selectedSite &&
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: '8px',
+                textTransform: 'none',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+                '&:hover': {
+                  backgroundColor: '#1976d2',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                },
+              }}
+              onClick={() => setOpen(true)}
+            >
+              <AddCircleOutlineOutlinedIcon color='#fffff' sx={{ mr: '5px' }} />
+              Add Invoice
+            </Button>
+          }
 
         </Box>
         <Box >

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { authUser } from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import { encryptData } from '../components/utils';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,15 +19,18 @@ const Login = () => {
     if (userRes.message) {
       alert(userRes.response.data);
     } else {
-      // setUserSession(userRes)
-      setUserSession({ 
+      const userData = {
         "username": username,
         "ownedSiteId": userRes.filter(site => site.roleInSite === 'Owner')[0]?.siteId || null,
         "sites": userRes.map(site => ({
           id: site.siteId,
           name: site.siteName
         }))
-      });
+      }
+      setUserSession(userData);
+
+      const encryptedUser = encryptData(userData);
+      localStorage.setItem('user', encryptedUser);
       navigate('/home')
     }
 
