@@ -24,7 +24,7 @@ const Home = () => {
   }
   
   const role = authUser?.ownedSiteId ? 'OWNER' : 'PARTNER'
-  const site = authUser?.ownedSiteId ? authUser?.sites?.find(i=> i?.id === authUser?.ownedSiteId)?.name : authUser?.sites?.[0]?.name
+  const site = authUser?.ownedSiteId ? authUser?.sites?.find(i=> i?.id === authUser?.ownedSiteId)?.name : 'All Sites'
 
   return (
     <Box >
