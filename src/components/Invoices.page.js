@@ -14,7 +14,7 @@ import DateFilter from './DateFilter';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { deleteInvoice, getInvoiceByStoreId } from '../api/api';
 import { useAuth } from '../context/AuthContext';
-
+import { format } from 'date-fns';
 
 
 function InvoicesPage() {
@@ -79,7 +79,15 @@ function InvoicesPage() {
         sitesData?.find(i => i?.id == row?.original?.siteId)?.name
       )
     },
-    { accessorKey: 'invoiceDate', header: 'Invoice Date', size: 100, },
+    {
+      accessorKey: 'invoiceDate', header: 'Invoice Date', size: 100,
+      Cell: ({ row }) => {
+        const value = row.original.invoiceDate;
+        if (!value) return '-';
+        const date = new Date(value);
+        return isNaN(date) ? '-' : format(date, 'dd/MM/yyyy');
+      }
+     },
     { accessorKey: 'invoiceNumber', header: 'Invoice Number', size: 100, },
     { accessorKey: 'dueDate', header: 'Due Date', size: 100, },
     { accessorKey: 'supplierName', header: 'Supplier Name', size: 150, },
@@ -116,6 +124,7 @@ function InvoicesPage() {
     { accessorKey: 'paymentDate', header: 'Payment Date', size: 100, },
     { accessorKey: 'directDebit', header: 'Direct Debit', size: 100, },
     { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
+    { accessorKey: 'paymentStatus', header: 'Payment Status', size: 100, },
     { accessorKey: 'invoiceType', header: 'Invoice Type', size: 100, },
     {
       accessorKey: 'preview',
