@@ -62,6 +62,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
       paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
       preview: selectedData?.preview ?? false,
       paymentType: selectedData?.paymentType ?? null,
+      paymentStatus : selectedData?.paymentStatus ?? null,
       invoiceType: selectedData?.invoiceType ?? "",
       nonGSTAmount: selectedData?.nonGSTAmount ?? null,
       directDebit: selectedData?.directDebit ?? null,
@@ -112,7 +113,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
   const handleSubmit = async () => {
     let payload = {
       ...form,
-      siteId: authUser?.sites?.find(i => i.name == form?.siteId)?.id
+      // siteId: authUser?.sites?.find(i => i.name == form?.siteId)?.id
+      siteId: authUser?.ownedSiteId
     }
 
     if (selectedData?.invoiceId) {
@@ -138,7 +140,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
         }}
       >
         <DialogTitle>
-          <Typography variant="h6" fontWeight="bold">{selectedData ? 'Edit' : 'Add'} Invoice</Typography>
+          <Typography variant="h6" fontWeight="bold">{selectedData ? 'Edit' : 'Add'} Invoice -  {authUser?.sites?.find(i => i?.id == authUser?.ownedSiteId)?.name}</Typography>
         </DialogTitle>
         <DialogContent dividers sx={{ px: 3, py: 1 }}>
           <Grid spacing={2}>
@@ -153,6 +155,22 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                 onChange={(e) => handleChange('invoiceNumber', e.target.value)}
               />
 
+
+              <FormControl sx={{ minWidth: 120 }} size="small" >
+                <InputLabel id="demo-simple-select-label">Invoice Type</InputLabel>
+                <Select
+                  sx={{ width: '250px', height: '40px' }}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.invoiceType}
+                  label="Invoice Type"
+                  onChange={(event) => handleChange('invoiceType', event.target.value)}
+                >
+                  <MenuItem value='Original'>Original</MenuItem>
+                  <MenuItem value='Dummy'>Dummy</MenuItem>
+                </Select>
+              </FormControl>
+              {/* 
               <Autocomplete
                 freeSolo
                 options={authUser?.sites?.map(i => i?.name)}
@@ -167,7 +185,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                     sx={{ width: '250px' }}
                   />
                 )}
-              />
+              /> */}
 
             </Box>
 
@@ -201,7 +219,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
 
             <Box sx={{ my: 2, display: 'flex' }}>
-              <Autocomplete
+              {/* <Autocomplete
                 freeSolo
                 options={['Amazon', 'Flipkart', 'Tata Consultancy', 'Infosys']}
                 value={form.supplierName}
@@ -215,8 +233,19 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                     sx={{ mr: 2, width: '250px' }}
                   />
                 )}
+              /> */}
+
+              <TextField
+                value={form.supplierName}
+                sx={{ mr: 2, width: '250px' }}
+                multiline
+                minRows={1}
+                size="small"
+                onChange={(e) => handleChange('supplierName', e.target.value)}
+                label="Supplier Name"
               />
-              <Autocomplete
+
+              {/* <Autocomplete
                 freeSolo
                 options={[
                   'Office Supplies',
@@ -235,6 +264,15 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                     sx={{ width: '250px' }}
                   />
                 )}
+              /> */}
+              <TextField
+                value={form.accountHead}
+                sx={{ mr: 2, width: '250px' }}
+                multiline
+                minRows={1}
+                size="small"
+                onChange={(e) => handleChange('accountHead', e.target.value)}
+                label="Account Head"
               />
             </Box>
 
@@ -311,21 +349,21 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                   },
                 }}
               />
-
-              <FormControl sx={{ minWidth: 120 }} size="small" >
-                <InputLabel id="demo-simple-select-label">Invoice Type</InputLabel>
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel id="demo-select-small-label">Payment Type</InputLabel>
                 <Select
                   sx={{ width: '250px', height: '40px' }}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={form.invoiceType}
-                  label="Invoice Type"
-                  onChange={(event) => handleChange('invoiceType', event.target.value)}
+                  value={form?.paymentType}
+                  label="Payment Type"
+                  onChange={(event) => handleChange('paymentType', event.target.value)}
                 >
-                  <MenuItem value='Original'>Original</MenuItem>
-                  <MenuItem value='Dummy'>Dummy</MenuItem>
+                  <MenuItem value='Cash'>Cash</MenuItem>
+                  <MenuItem value='Card'>Card</MenuItem>
                 </Select>
               </FormControl>
+
 
             </Box>
 
@@ -345,18 +383,18 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                 </Select>
               </FormControl>
 
-              <FormControl sx={{ minWidth: 120 }} size="small">
-                <InputLabel id="demo-select-small-label">Payment Type</InputLabel>
+               <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel id="demo-select-small-label">Payment Status</InputLabel>
                 <Select
                   sx={{ width: '250px', height: '40px' }}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={form.paymentType}
-                  label="Payment Type"
-                  onChange={(event) => handleChange('paymentType', event.target.value)}
+                  value={form.paymentStatus}
+                  label="Payment Status"
+                  onChange={(event) => handleChange('paymentStatus', event.target.value)}
                 >
-                  <MenuItem value='Cash'>Cash</MenuItem>
-                  <MenuItem value='Card'>Card</MenuItem>
+                  <MenuItem value='Paid'>Paid</MenuItem>
+                  <MenuItem value='Due'>Due</MenuItem>
                 </Select>
               </FormControl>
             </Box>

@@ -309,7 +309,7 @@ function InvoicesPage() {
               </Select>
             </FormControl>
 
-            <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} />
+            {/* <DateFilter onDateChange={handleDateChange} setRange={setRange} range={range} /> */}
           </Box>
           {
             authUser?.ownedSiteId === selectedSite &&
