@@ -81,7 +81,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
         const amount = Number(value);
         const gst = Math.round(amount * 0.1);
         const nonGSTAmount = Number(prev.nonGSTAmount)
-        updated.gst = gst || '';
+        updated.gst = gst || 0;
         updated.totalAmount = amount + gst + nonGSTAmount;
       }
 
@@ -291,7 +291,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
                 type="number"
                 sx={{ width: '250px' }}
                 size="small"
-                disabled
+                onChange={(e) => handleChange('totalAmount', e.target.value)}
                 value={form.totalAmount}
               />
             </Box>
