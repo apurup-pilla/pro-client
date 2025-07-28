@@ -5,7 +5,7 @@ import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Too
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AddInvoiceModal from './AddInvoice.modal';
 import DeleteInvoiceModal from './DeleteInvoice.modal';
 import { data } from './utils';
@@ -28,7 +28,7 @@ function InvoicesPage() {
   const [selectedSite, setSelectedSite] = useState(authUser?.ownedSiteId || 1)
 
   useEffect(() => {
-    setSelectedSite(authUser?.ownedSiteId || authUser?.sites?.[0]?.id )
+    setSelectedSite(authUser?.ownedSiteId || authUser?.sites?.[0]?.id)
     setSitesData(authUser?.sites || []);
   }, [authUser])
 
@@ -38,7 +38,11 @@ function InvoicesPage() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
+  const fileInputRefs = useRef({});
+
   const [invoicesData, setInvoicesData] = useState([]);
+
+  const [allPdfs, setAllPdfs] = useState({})
 
   console.log('authUser', authUser)
 
@@ -58,10 +62,27 @@ function InvoicesPage() {
   }
 
   useEffect(() => {
-    if(selectedSite){
-    fetchInvoices(selectedSite)
+    if (selectedSite) {
+      fetchInvoices(selectedSite)
     };
   }, [selectedSite]);
+
+
+  const loadPdf = (invoicesData) => {
+    const data = {}
+    invoicesData.forEach(each => {
+      const pdf = localStorage.getItem(each?.invoiceId)
+      if (pdf) {
+        data[each?.invoiceId] = pdf
+      }
+    });
+    setAllPdfs(data)
+  }
+
+
+  useEffect(() => {
+    loadPdf(invoicesData)
+  }, [invoicesData])
 
 
 
@@ -70,6 +91,37 @@ function InvoicesPage() {
     setSelectedSite(siteId);
     fetchInvoices(selectedSite);
   }
+
+  const [pdfDataUrl, setPdfDataUrl] = useState(localStorage.getItem("uploadedPdf") || null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === "application/pdf") {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result;
+        localStorage.setItem(selectedData?.invoiceId, dataUrl);
+        setSelectedData(null)
+        loadPdf(invoicesData)
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Please upload a valid PDF file.");
+    }
+  };
+
+  const handleOpenPdf = (url) => {
+    if (!url) return;
+
+    const byteCharacters = atob(url.split(",")[1]);
+    const byteNumbers = new Array(byteCharacters.length).fill().map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, "_blank");
+  }
+
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
@@ -87,7 +139,7 @@ function InvoicesPage() {
         const date = new Date(value);
         return isNaN(date) ? '-' : format(date, 'dd/MM/yyyy');
       }
-     },
+    },
     { accessorKey: 'invoiceNumber', header: 'Invoice Number', size: 100, },
     { accessorKey: 'dueDate', header: 'Due Date', size: 100, },
     { accessorKey: 'supplierName', header: 'Supplier Name', size: 150, },
@@ -132,30 +184,51 @@ function InvoicesPage() {
       size: 100,
       Cell: ({ row }) => (
         <>
-          {row.original.preview ? (
-            <Typography sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}>View<OpenInNewOutlinedIcon sx={{ fontSize: 18, mb: '-4px', ml: "2px" }} /> </Typography>
+          {allPdfs?.[row?.original?.invoiceId] ? (
+            <Typography
+              sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}
+              onClick={() => handleOpenPdf(allPdfs?.[row?.original?.invoiceId])}
+            >
+              View
+              <OpenInNewOutlinedIcon
+                sx={{ fontSize: 18, ml: "2px" }}
+              />
+            </Typography>
           ) : (
             authUser?.ownedSiteId === selectedSite ?
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  height: 30,
-                  width: 60,
-                  fontSize: 12,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-                  '&:hover': {
-                    backgroundColor: '#1976d2',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                  },
-                }}
-              >
-                Upload
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    height: 30,
+                    width: 60,
+                    fontSize: 12,
+                    borderRadius: '8px',
+                    textTransform: 'none',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+                    '&:hover': {
+                      backgroundColor: '#1976d2',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                    },
+                  }}
+                  onClick={() => {
+                    const inputRef = fileInputRefs.current[row.original.invoiceId];
+                    if (inputRef?.value) inputRef.value = "";
+                    inputRef?.click();
+                    setSelectedData(row.original);
+                  }}
+                >
+                  Upload
+                </Button>
+                <input type="file" accept="application/pdf"
+                  style={{ display: "none" }}
+                  ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
+                  onChange={handleFileChange}
+                />
+              </>
               :
-              <div></div>
+              <div>-</div>
 
           )}
         </>
