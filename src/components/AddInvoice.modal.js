@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Button, Grid, MenuItem, InputLabel, FormControl, Select,
@@ -71,6 +71,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
   }, [selectedData]);
 
 
+
   const handleChange = (field, value) => {
     setForm((prev) => {
       let updated = {
@@ -127,6 +128,27 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
     setForm({})
     handleClose();
   };
+
+const submitDisabled = useMemo(() => {
+  return !(
+    form?.invoiceNumber &&
+    form?.invoiceDate &&
+    form?.dueDate &&
+    form?.supplierName &&
+    form?.accountHead &&
+    form?.description &&
+    form?.invoiceType &&
+    form?.nonGSTAmount  &&
+    form?.amount &&
+    form?.gst &&
+    form?.totalAmount 
+    // form?.paymentDate &&
+    // form?.paymentType  &&
+    // form?.paymentStatus  &&
+    // form?.directDebit 
+  );
+}, [form]);
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -280,8 +302,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
             <Box sx={{ my: 2, display: 'flex' }}>
               <TextField
-                label="description"
-                sx={{ width: '100%' }}
+                label="Description"
+                sx={{ width: '96%' }}
                 multiline
                 minRows={1}
                 size="small"
@@ -293,7 +315,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
             <Box sx={{ my: 2, display: 'flex' }}>
 
               <TextField
-                label="amount (AUD)"
+                label="Amount (AUD)"
                 type="number"
                 sx={{ mr: 2, width: '250px' }}
                 size="small"
@@ -425,7 +447,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
           <Button onClick={() => { handleClose(); setForm({}) }} color="">Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">{selectedData ? 'Edit' : 'Add'}</Button>
+          <Button onClick={handleSubmit} disabled={submitDisabled} variant="contained" color="primary">{selectedData ? 'Edit' : 'Add'}</Button>
         </DialogActions>
       </Dialog>
     </LocalizationProvider>
