@@ -48,26 +48,44 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
 
   useEffect(() => {
+    // setForm({
+    //   ...selectedData,
+    //   invoiceNumber: selectedData?.invoiceNumber || '',
+    //   invoiceDate: selectedData?.invoiceDate ? dayjs(selectedData?.invoiceDate) : null,
+    //   dueDate: selectedData?.dueDate ? dayjs(selectedData?.dueDate) : null,
+    //   supplierName: selectedData?.supplierName || '',
+    //   accountHead: selectedData?.accountHead || '',
+    //   description: selectedData?.description || '',
+    //   amount: selectedData?.amount || '',
+    //   gst: selectedData?.gst || '',
+    //   totalAmount: selectedData?.totalAmount || '',
+    //   paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
+    //   preview: selectedData?.preview ?? false,
+    //   paymentType: selectedData?.paymentType ?? null,
+    //   paymentStatus : selectedData?.paymentStatus ?? null,
+    //   invoiceType: selectedData?.invoiceType ?? "",
+    //   nonGSTAmount: selectedData?.nonGSTAmount ?? null,
+    //   directDebit: selectedData?.directDebit ?? null,
+    //   siteId: selectedData?.siteId ? authUser?.sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
+    // });
+
     setForm({
-      ...selectedData,
-      invoiceNumber: selectedData?.invoiceNumber || '',
-      invoiceDate: selectedData?.invoiceDate ? dayjs(selectedData?.invoiceDate) : null,
-      dueDate: selectedData?.dueDate ? dayjs(selectedData?.dueDate) : null,
-      supplierName: selectedData?.supplierName || '',
-      accountHead: selectedData?.accountHead || '',
-      description: selectedData?.description || '',
-      amount: selectedData?.amount || '',
-      gst: selectedData?.gst || '',
-      totalAmount: selectedData?.totalAmount || '',
-      paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
-      preview: selectedData?.preview ?? false,
-      paymentType: selectedData?.paymentType ?? null,
-      paymentStatus : selectedData?.paymentStatus ?? null,
-      invoiceType: selectedData?.invoiceType ?? "",
-      nonGSTAmount: selectedData?.nonGSTAmount ?? null,
-      directDebit: selectedData?.directDebit ?? null,
-      siteId: selectedData?.siteId ? authUser?.sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
-    });
+    "invoiceNumber": "837834",
+    "invoiceType": "Original",
+    "invoiceDate": "2025-08-13T18:30:00.000Z",
+    "dueDate": "2025-08-12T18:30:00.000Z",
+    "supplierName": "jshbdfuy",
+    "accountHead": "ksjbfru",
+    "description": "skjbfiee",
+    "amount": "98375",
+    "gst": 9838,
+    "totalAmount": 117600,
+    "nonGSTAmount": "9387",
+    "paymentType": "Cash",
+    "paymentDate": "2025-08-21T18:30:00.000Z",
+    "directDebit": "Yes",
+    "paymentStatus": "Paid"
+})
   }, [selectedData]);
 
 

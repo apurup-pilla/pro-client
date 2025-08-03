@@ -110,6 +110,41 @@ function InvoicesPage() {
     }
   };
 
+  const handleUploadPdf = async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file || file.type !== "application/pdf") {
+      alert("Please upload a valid PDF file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(`http://localhost:50930/api/invoices/12/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("File upload failed.");
+      }
+
+      const result = await response.json();
+      console.log("Uploaded File URL:", result.fileUrl);
+
+      // Optionally store or show the PDF
+      // setPdfUrl(result.fileUrl); // If you're tracking uploaded PDFs
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Error uploading the file.");
+    }
+
+  }
+
+
   const handleOpenPdf = (url) => {
     if (!url) return;
 
@@ -224,7 +259,8 @@ function InvoicesPage() {
                 <input type="file" accept="application/pdf"
                   style={{ display: "none" }}
                   ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
-                  onChange={handleFileChange}
+                  // onChange={handleFileChange}
+                   onChange={handleUploadPdf}
                 />
               </>
               :
