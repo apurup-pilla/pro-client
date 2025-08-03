@@ -170,13 +170,17 @@ function InvoicesPage() {
       accessorKey: 'invoiceDate', header: 'Invoice Date', size: 100,
       Cell: ({ row }) => {
         const value = row.original.invoiceDate;
-        if (!value) return '-';
-        const date = new Date(value);
-        return isNaN(date) ? '-' : format(date, 'dd/MM/yyyy');
+        return value ? format(new Date(value), 'dd/MM/yyyy') : '';
       }
     },
     { accessorKey: 'invoiceNumber', header: 'Invoice Number', size: 100, },
-    { accessorKey: 'dueDate', header: 'Due Date', size: 100, },
+    {
+      accessorKey: 'dueDate', header: 'Due Date', size: 100,
+      Cell: ({ row }) => {
+        const value = row.original.dueDate;
+        return value ? format(new Date(value), 'dd/MM/yyyy') : '';
+      }
+    },
     { accessorKey: 'supplierName', header: 'Supplier Name', size: 150, },
     { accessorKey: 'accountHead', header: 'Account Head', size: 150, },
     { accessorKey: 'description', header: 'Description', size: 150, },
@@ -208,7 +212,12 @@ function InvoicesPage() {
       </>),
       size: 60,
     },
-    { accessorKey: 'paymentDate', header: 'Payment Date', size: 100, },
+    { accessorKey: 'paymentDate', header: 'Payment Date', size: 100,
+      Cell: ({ row }) => {
+        const value = row.original.paymentDate;
+        return value ? format(new Date(value), 'dd/MM/yyyy') : '';
+      }
+     },
     { accessorKey: 'directDebit', header: 'Direct Debit', size: 100, },
     { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
     { accessorKey: 'paymentStatus', header: 'Payment Status', size: 100, },
