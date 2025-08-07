@@ -12,7 +12,7 @@ import { data } from './utils';
 import axios from "axios";
 import DateFilter from './DateFilter';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import { deleteInvoice, getInvoiceByStoreId } from '../api/api';
+import { BASE_URL, deleteInvoice, getInvoiceByStoreId, uploadInvoicePdf } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 
@@ -122,39 +122,39 @@ function InvoicesPage() {
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      const response = await fetch(`http://localhost:50930/api/invoices/12/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
+    try {    
+      const response = await uploadInvoicePdf(selectedData?.invoiceId , formData )
+      console.log("response PDF upload-", response)
+      if (!response?.newFileName) {
         throw new Error("File upload failed.");
       }
 
-      const result = await response.json();
-      console.log("Uploaded File URL:", result.fileUrl);
-
-      // Optionally store or show the PDF
-      // setPdfUrl(result.fileUrl); // If you're tracking uploaded PDFs
+      setSelectedData(null)
+      fetchInvoices(selectedSite)
     } catch (error) {
       console.error("Upload error:", error);
+      setSelectedData(null)
       alert("Error uploading the file.");
     }
-
   }
 
 
-  const handleOpenPdf = (url) => {
-    if (!url) return;
+  // const handleOpenPdf = (url) => {
+  //   if (!url) return;
 
-    const byteCharacters = atob(url.split(",")[1]);
-    const byteNumbers = new Array(byteCharacters.length).fill().map((_, i) => byteCharacters.charCodeAt(i));
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
+  //   const byteCharacters = atob(url.split(",")[1]);
+  //   const byteNumbers = new Array(byteCharacters.length).fill().map((_, i) => byteCharacters.charCodeAt(i));
+  //   const byteArray = new Uint8Array(byteNumbers);
+  //   const blob = new Blob([byteArray], { type: "application/pdf" });
 
-    const blobUrl = URL.createObjectURL(blob);
-    window.open(blobUrl, "_blank");
+  //   const blobUrl = URL.createObjectURL(blob);
+  //   window.open(blobUrl, "_blank");
+  // }
+
+    const handleOpenPdf = (pdfUrl) => {
+    if (!pdfUrl) return;
+    const formatedUrl = `${BASE_URL}/Uploads/${pdfUrl}`
+    window.open(formatedUrl, "_blank");
   }
 
 
@@ -228,10 +228,10 @@ function InvoicesPage() {
       size: 100,
       Cell: ({ row }) => (
         <>
-          {allPdfs?.[row?.original?.invoiceId] ? (
+          {row.original?.pdfUrl ? (
             <Typography
               sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}
-              onClick={() => handleOpenPdf(allPdfs?.[row?.original?.invoiceId])}
+              onClick={() => handleOpenPdf(row.original?.pdfUrl )}
             >
               View
               <OpenInNewOutlinedIcon

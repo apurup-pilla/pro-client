@@ -13,7 +13,8 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     const userRes = await authUser({ username, password })
     if (userRes) {
       const userData = {
@@ -80,52 +81,56 @@ const Login = () => {
             transition={{ duration: 0.5, delay: 0.5 }}
           >
             <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Six Peers Pty Ltd
+              Six Peer Pty Ltd
             </Typography>
             <Typography variant="body1" align="center" sx={{ mb: 3 }}>
               Please login to your account
             </Typography>
           </motion.div>
-          <motion.div
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.7, delay: 1 }}
-          >
-            <TextField
-              label="Username"
-              variant="outlined"
-              fullWidth
-              sx={{ mb: 3 }}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-              label="Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              sx={{ mb: 3 }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </motion.div>
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, delay: 1.5 }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              sx={{ borderRadius: '8px' }}
-              disabled={!isFormValid}
-              onClick={handleLogin}
+
+          <form onSubmit={handleLogin}>
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 1 }}
             >
-              Login
-            </Button>
-          </motion.div>
+              <TextField
+                label="Username"
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 3 }}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 3 }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </motion.div>
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 1.5 }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                size="large"
+                sx={{ borderRadius: '8px' }}
+                disabled={!isFormValid}
+                onClick={handleLogin}
+                type="submit"
+              >
+                Login
+              </Button>
+            </motion.div>
+          </form>
         </Paper>
       </motion.div>
     </Box>
