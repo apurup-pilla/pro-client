@@ -81,7 +81,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
       if (field === 'amount') {
         const amount = Number(value);
-        const gst = amount * 0.1;
+        const gst = (amount * 10)/100;
         const nonGSTAmount = Number(prev.nonGSTAmount)
         updated.gst = gst || 0;
         updated.totalAmount = amount + gst + nonGSTAmount;

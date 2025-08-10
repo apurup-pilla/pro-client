@@ -152,9 +152,9 @@ function InvoicesPage() {
   //   window.open(blobUrl, "_blank");
   // }
 
-  const handleOpenPdf = (pdfUrl) => {
-    if (!pdfUrl) return;
-    const formatedUrl = `${BASE_URL}/Invoices/${pdfUrl}`;
+  const handleOpenPdf = (invoiceUrl) => {
+    if (!invoiceUrl) return;
+    const formatedUrl = `${BASE_URL}/Invoices/${invoiceUrl}`;
     window.open(formatedUrl, "_blank");
   }
 
@@ -230,10 +230,10 @@ function InvoicesPage() {
       size: 100,
       Cell: ({ row }) => (
         <>
-          {row.original?.pdfUrl ? (
+          {row.original?.invoiceUrl ? (
             <Typography
               sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}
-              onClick={() => handleOpenPdf(row.original?.pdfUrl)}
+              onClick={() => handleOpenPdf(row.original?.invoiceUrl)}
             >
               View
               <OpenInNewOutlinedIcon
