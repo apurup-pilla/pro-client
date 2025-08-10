@@ -153,8 +153,8 @@ const submitDisabled = useMemo(() => {
     form?.invoiceDate &&
     form?.dueDate &&
     form?.supplierName &&
-    form?.accountHead &&
-    form?.description &&
+    // form?.accountHead &&
+    // form?.description &&
     form?.invoiceType &&
     // form?.nonGSTAmount  &&
     form?.amount &&
@@ -320,7 +320,6 @@ const submitDisabled = useMemo(() => {
                 multiline
                 minRows={1}
                 size="small"
-                required
                 onChange={(e) => handleChange('accountHead', e.target.value)}
                 label="Account Head"
               />
@@ -336,7 +335,6 @@ const submitDisabled = useMemo(() => {
                 minRows={1}
                 size="small"
                 value={form.description}
-                required
                 onChange={(e) => handleChange('description', e.target.value)}
               />
             </Box>
@@ -453,7 +451,7 @@ const submitDisabled = useMemo(() => {
               </FormControl>
             </Box>
             <Box sx={{ my: 2, display: 'flex' }}>
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
                 <FormLabel sx={{ mb: 0.5, fontSize: '0.875rem', color: 'text.secondary' }}>
                   Upload Invoice Document <Typography component="span" variant="caption" sx={{ color: 'gray' }}>(Optional)</Typography>
                 </FormLabel>
@@ -466,7 +464,7 @@ const submitDisabled = useMemo(() => {
                   Upload <CloudUploadOutlinedIcon sx={{ ml: 2 }} />
                   <input type="file" hidden onChange={handleFileChange} />
                 </Button>
-              </FormControl>
+              </FormControl> */}
 
               {/* {form.preview && (
                 <Typography variant="caption" mt={1} color="text.secondary">
