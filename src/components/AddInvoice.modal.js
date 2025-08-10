@@ -72,8 +72,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
     setForm({
     "invoiceNumber": "837834",
     "invoiceType": "Original",
-    "invoiceDate": "2025-08-13T18:30:00.000Z",
-    "dueDate": "2025-08-12T18:30:00.000Z",
+    "invoiceDate": dayjs("2025-08-13T18:30:00.000Z"),
+    "dueDate": dayjs("2025-08-12T18:30:00.000Z"),
     "supplierName": "jshbdfuy",
     "accountHead": "ksjbfru",
     "description": "skjbfiee",
@@ -82,7 +82,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
     "totalAmount": 117600,
     "nonGSTAmount": "9387",
     "paymentType": "Cash",
-    "paymentDate": "2025-08-21T18:30:00.000Z",
+    "paymentDate": dayjs("2025-08-21T18:30:00.000Z"),
     "directDebit": "Yes",
     "paymentStatus": "Paid"
 })
@@ -99,7 +99,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
       if (field === 'amount') {
         const amount = Number(value);
-        const gst = Math.round(amount * 0.1);
+        const gst = amount * 0.1;
         const nonGSTAmount = Number(prev.nonGSTAmount)
         updated.gst = gst || 0;
         updated.totalAmount = amount + gst + nonGSTAmount;
@@ -153,16 +153,16 @@ const submitDisabled = useMemo(() => {
     form?.invoiceDate &&
     form?.dueDate &&
     form?.supplierName &&
-    form?.accountHead &&
-    form?.description &&
+    // form?.accountHead &&
+    // form?.description &&
     form?.invoiceType &&
-    form?.nonGSTAmount  &&
+    // form?.nonGSTAmount  &&
     form?.amount &&
-    form?.gst &&
-    form?.totalAmount 
+    // form?.gst &&
+    form?.totalAmount &&
     // form?.paymentDate &&
     // form?.paymentType  &&
-    // form?.paymentStatus  &&
+    form?.paymentStatus 
     // form?.directDebit 
   );
 }, [form]);
@@ -182,7 +182,10 @@ const submitDisabled = useMemo(() => {
         <DialogTitle>
           <Typography variant="h6" fontWeight="bold">{selectedData ? 'Edit' : 'Add'} Invoice -  {authUser?.sites?.find(i => i?.id == authUser?.ownedSiteId)?.name}</Typography>
         </DialogTitle>
-        <DialogContent dividers sx={{ px: 3, py: 1 }}>
+        <DialogContent dividers sx={{ px: 3, py: 1, "& .MuiFormLabel-asterisk": { color: "red" } }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <span style={{ color: "red" }}>*</span> indicates mandatory fields
+          </Typography>
           <Grid spacing={2}>
 
             <Box sx={{ my: 2, display: 'flex' }}>
@@ -192,11 +195,12 @@ const submitDisabled = useMemo(() => {
                 sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.invoiceNumber}
+                required
                 onChange={(e) => handleChange('invoiceNumber', e.target.value)}
               />
 
 
-              <FormControl sx={{ minWidth: 120 }} size="small" >
+              <FormControl sx={{ minWidth: 120 }} size="small" required>
                 <InputLabel id="demo-simple-select-label">Invoice Type</InputLabel>
                 <Select
                   sx={{ width: '250px', height: '40px' }}
@@ -233,11 +237,13 @@ const submitDisabled = useMemo(() => {
               <DatePicker
                 label="Invoice Date"
                 value={form.invoiceDate}
+                format="DD/MM/YYYY" 
                 onChange={(date) => handleChange('invoiceDate', date)}
                 renderInput={(params) => <TextField fullWidth size="small" {...params} />}
                 sx={{ mr: 2, width: '250px' }}
                 slotProps={{
                   textField: {
+                    required: true,
                     size: 'small',
                   },
                 }}
@@ -247,10 +253,12 @@ const submitDisabled = useMemo(() => {
                 label="Due Date"
                 sx={{ width: '250px' }}
                 value={form.dueDate}
+                format="DD/MM/YYYY" 
                 onChange={(date) => handleChange('dueDate', date)}
                 renderInput={(params) => <TextField fullWidth size="small" {...params} />}
                 slotProps={{
                   textField: {
+                    required: true,
                     size: 'small',
                   },
                 }}
@@ -281,6 +289,7 @@ const submitDisabled = useMemo(() => {
                 multiline
                 minRows={1}
                 size="small"
+                required
                 onChange={(e) => handleChange('supplierName', e.target.value)}
                 label="Supplier Name"
               />
@@ -338,6 +347,7 @@ const submitDisabled = useMemo(() => {
                 sx={{ mr: 2, width: '250px' }}
                 size="small"
                 value={form.amount}
+                required
                 onChange={(e) => handleChange('amount', e.target.value)}
               />
 
@@ -369,6 +379,7 @@ const submitDisabled = useMemo(() => {
                 type="number"
                 sx={{ width: '250px' }}
                 size="small"
+                required
                 onChange={(e) => handleChange('totalAmount', e.target.value)}
                 value={form.totalAmount}
               />
@@ -380,6 +391,7 @@ const submitDisabled = useMemo(() => {
               <DatePicker
                 label="Payment Date"
                 sx={{ width: '250px', mr: 2 }}
+                format="DD/MM/YYYY" 
                 value={form.paymentDate}
                 onChange={(date) => handleChange('paymentDate', date)}
                 renderInput={(params) => <TextField sx={{}} fullWidth size="small" {...params} />}
@@ -423,7 +435,7 @@ const submitDisabled = useMemo(() => {
                 </Select>
               </FormControl>
 
-               <FormControl sx={{ minWidth: 120 }} size="small">
+               <FormControl sx={{ minWidth: 120 }} size="small" required>
                 <InputLabel id="demo-select-small-label">Payment Status</InputLabel>
                 <Select
                   sx={{ width: '250px', height: '40px' }}
@@ -439,7 +451,7 @@ const submitDisabled = useMemo(() => {
               </FormControl>
             </Box>
             <Box sx={{ my: 2, display: 'flex' }}>
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
                 <FormLabel sx={{ mb: 0.5, fontSize: '0.875rem', color: 'text.secondary' }}>
                   Upload Invoice Document <Typography component="span" variant="caption" sx={{ color: 'gray' }}>(Optional)</Typography>
                 </FormLabel>
@@ -452,7 +464,7 @@ const submitDisabled = useMemo(() => {
                   Upload <CloudUploadOutlinedIcon sx={{ ml: 2 }} />
                   <input type="file" hidden onChange={handleFileChange} />
                 </Button>
-              </FormControl>
+              </FormControl> */}
 
               {/* {form.preview && (
                 <Typography variant="caption" mt={1} color="text.secondary">
