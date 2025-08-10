@@ -15,7 +15,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import { BASE_URL, deleteInvoice, getInvoiceByStoreId, uploadInvoicePdf } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
-
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
 function InvoicesPage() {
 
@@ -114,16 +114,17 @@ function InvoicesPage() {
 
     const file = e.target.files[0];
 
-    if (!file || file.type !== "application/pdf") {
-      alert("Please upload a valid PDF file.");
+    if (!file || !["application/pdf", "image/jpeg", "image/jpg"].includes(file.type)) {
+      alert("Please upload a valid PDF or JPEG file.");
       return;
     }
+
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {    
-      const response = await uploadInvoicePdf(selectedData?.invoiceId , formData )
+    try {
+      const response = await uploadInvoicePdf(selectedData?.invoiceId, formData)
       console.log("response PDF upload-", response)
       if (!response?.newFileName) {
         throw new Error("File upload failed.");
@@ -151,7 +152,7 @@ function InvoicesPage() {
   //   window.open(blobUrl, "_blank");
   // }
 
-    const handleOpenPdf = (pdfUrl) => {
+  const handleOpenPdf = (pdfUrl) => {
     if (!pdfUrl) return;
     const formatedUrl = `${BASE_URL}/Invoices/${pdfUrl}`;
     window.open(formatedUrl, "_blank");
@@ -212,12 +213,13 @@ function InvoicesPage() {
       </>),
       size: 60,
     },
-    { accessorKey: 'paymentDate', header: 'Payment Date', size: 100,
+    {
+      accessorKey: 'paymentDate', header: 'Payment Date', size: 100,
       Cell: ({ row }) => {
         const value = row.original.paymentDate;
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
       }
-     },
+    },
     { accessorKey: 'directDebit', header: 'Direct Debit', size: 100, },
     { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
     { accessorKey: 'paymentStatus', header: 'Payment Status', size: 100, },
@@ -231,7 +233,7 @@ function InvoicesPage() {
           {row.original?.pdfUrl ? (
             <Typography
               sx={{ color: '#1976d2', textDecoration: 'underline', cursor: "pointer", fontSize: 14, mx: 1 }}
-              onClick={() => handleOpenPdf(row.original?.pdfUrl )}
+              onClick={() => handleOpenPdf(row.original?.pdfUrl)}
             >
               View
               <OpenInNewOutlinedIcon
@@ -239,71 +241,47 @@ function InvoicesPage() {
               />
             </Typography>
           ) : (
-            authUser?.ownedSiteId === selectedSite ?
-              <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    height: 30,
-                    width: 60,
-                    fontSize: 12,
-                    borderRadius: '8px',
-                    textTransform: 'none',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-                    '&:hover': {
-                      backgroundColor: '#1976d2',
-                      boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                    },
-                  }}
-                  onClick={() => {
-                    const inputRef = fileInputRefs.current[row.original.invoiceId];
-                    if (inputRef?.value) inputRef.value = "";
-                    inputRef?.click();
-                    setSelectedData(row.original);
-                  }}
-                >
-                  Upload
-                </Button>
-                <input type="file" accept="application/pdf"
-                  style={{ display: "none" }}
-                  ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
-                  // onChange={handleFileChange}
-                   onChange={handleUploadPdf}
-                />
-              </>
-              :
+            // authUser?.ownedSiteId === selectedSite ?
+            //   <>
+            //     <Button
+            //       variant="contained"
+            //       color="primary"
+            //       sx={{
+            //         height: 30,
+            //         width: 60,
+            //         fontSize: 12,
+            //         borderRadius: '8px',
+            //         textTransform: 'none',
+            //         boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+            //         '&:hover': {
+            //           backgroundColor: '#1976d2',
+            //           boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+            //         },
+            //       }}
+            //       onClick={() => {
+            //         const inputRef = fileInputRefs.current[row.original.invoiceId];
+            //         if (inputRef?.value) inputRef.value = "";
+            //         inputRef?.click();
+            //         setSelectedData(row.original);
+            //       }}
+            //     >
+            //       Upload
+            //     </Button>
+            //     <input type="file" accept="application/pdf"
+            //       style={{ display: "none" }}
+            //       ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
+            //       // onChange={handleFileChange}
+            //       onChange={handleUploadPdf}
+            //     />
+            //   </>
+            //   :
+
               <div>-</div>
 
           )}
         </>
       )
     },
-    // {
-    //   accessorKey: 'actions',
-    //   header: 'Actions',
-    //   size: 100,
-    //   Cell: ({ row }) => (
-    //     <>
-    //       <Tooltip title="Edit">
-    //         <IconButton
-    //           color="primary"
-    //           onClick={() => { setSelectedData(row.original); setOpen(true) }}
-    //         >
-    //           <EditOutlinedIcon fontSize="small" />
-    //         </IconButton>
-    //       </Tooltip>
-    //       <Tooltip title="Delete">
-    //         <IconButton
-    //           color="error"
-    //           onClick={() => { setOpenDelete(row.original) }}
-    //         >
-    //           <DeleteOutlineOutlinedIcon fontSize="small" />
-    //         </IconButton>
-    //       </Tooltip>
-    //     </>
-    //   ),
-    // },
   ];
 
   if (authUser?.ownedSiteId === selectedSite) {
@@ -311,9 +289,29 @@ function InvoicesPage() {
       {
         accessorKey: 'actions',
         header: 'Actions',
-        size: 100,
+        size: 150,
         Cell: ({ row }) => (
           <>
+            <Tooltip title="Upload">
+              <IconButton
+                color="primary"
+                onClick={() => {
+                  const inputRef = fileInputRefs.current[row.original.invoiceId];
+                  if (inputRef?.value) inputRef.value = "";
+                  inputRef?.click();
+                  setSelectedData(row.original);
+                }}
+              >
+                <CloudUploadOutlinedIcon fontSize="small" />
+              </IconButton>
+              <input 
+              type="file" 
+                accept="application/pdf, image/jpeg, image/jpg"
+                style={{ display: "none" }}
+                ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
+                onChange={handleUploadPdf}
+              />
+            </Tooltip>
             <Tooltip title="Edit">
               <IconButton
                 color="primary"
@@ -455,8 +453,20 @@ function InvoicesPage() {
           <MaterialReactTable table={table} />
         </Box>
       </Box>
-      <AddInvoiceModal open={open} handleClose={() => setOpen(false)} selectedData={selectedData} fetchInvoices={fetchInvoices} selectedSite={selectedSite} />
-      <DeleteInvoiceModal open={openDelete} handleClose={() => setOpenDelete(false)} fetchInvoices={fetchInvoices} selectedSite={selectedSite} />
+      <AddInvoiceModal
+        open={open}
+        handleClose={() => setOpen(false)}
+        selectedData={selectedData}
+        setSelectedData={setSelectedData}
+        fetchInvoices={fetchInvoices}
+        selectedSite={selectedSite}
+      />
+      <DeleteInvoiceModal
+        open={openDelete}
+        handleClose={() => setOpenDelete(false)}
+        fetchInvoices={fetchInvoices}
+        selectedSite={selectedSite}
+      />
     </>
   )
 }
