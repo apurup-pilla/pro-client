@@ -153,7 +153,7 @@ function InvoicesPage() {
 
     const handleOpenPdf = (pdfUrl) => {
     if (!pdfUrl) return;
-    const formatedUrl = `${BASE_URL}/Uploads/${pdfUrl}`
+    const formatedUrl = `${BASE_URL}/Invoices/${pdfUrl}`;
     window.open(formatedUrl, "_blank");
   }
 
