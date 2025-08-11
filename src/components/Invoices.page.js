@@ -49,7 +49,7 @@ function InvoicesPage() {
   const fetchInvoices = async (siteId) => {
     const invoiceRes = await getInvoiceByStoreId(siteId)
     console.log("Invoices:", invoiceRes);
-    Array.isArray(invoiceRes) && setInvoicesData(invoiceRes);
+    Array.isArray(invoiceRes) ? setInvoicesData(invoiceRes) : setInvoicesData([]);
   };
 
   const updateSiteDetails = async () => {
