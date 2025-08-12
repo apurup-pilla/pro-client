@@ -56,15 +56,15 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
       supplierName: selectedData?.supplierName || '',
       accountHead: selectedData?.accountHead || '',
       description: selectedData?.description || '',
-      amount: selectedData?.amount || '',
-      gst: selectedData?.gst || '',
-      totalAmount: selectedData?.totalAmount || '',
+      amount: selectedData?.amount || 0,
+      gst: selectedData?.gst || 0,
+      totalAmount: selectedData?.totalAmount || 0,
       paymentDate: selectedData?.paymentDate ? dayjs(selectedData?.paymentDate) : null,
       preview: selectedData?.preview ?? false,
       paymentType: selectedData?.paymentType ?? null,
       paymentStatus : selectedData?.paymentStatus ?? null,
       invoiceType: selectedData?.invoiceType ?? "",
-      nonGSTAmount: selectedData?.nonGSTAmount ?? null,
+      nonGSTAmount: selectedData?.nonGSTAmount ?? 0,
       directDebit: selectedData?.directDebit ?? null,
       siteId: selectedData?.siteId ? authUser?.sites?.find(i => i?.id == selectedData?.siteId)?.name : null,
     });
@@ -115,6 +115,8 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
     let payload = {
       ...form,
       // siteId: authUser?.sites?.find(i => i.name == form?.siteId)?.id
+      gst : form?.gst || 0,
+      nonGSTAmount: form?.nonGSTAmount || 0,
       siteId: authUser?.ownedSiteId
     }
 
