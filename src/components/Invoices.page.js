@@ -220,7 +220,6 @@ function InvoicesPage() {
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
       }
     },
-    { accessorKey: 'directDebit', header: 'Direct Debit', size: 100, },
     { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
     { accessorKey: 'paymentStatus', header: 'Payment Status', size: 100, },
     { accessorKey: 'invoiceType', header: 'Invoice Type', size: 100, },
