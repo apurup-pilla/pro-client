@@ -396,8 +396,8 @@ const submitDisabled = useMemo(() => {
                   label="Payment Type"
                   onChange={(event) => handleChange('paymentType', event.target.value)}
                 >
-                  <MenuItem value='Cash'>Cash</MenuItem>
-                  <MenuItem value='Card'>Card</MenuItem>
+                  <MenuItem value='Bank Transfer'>Bank Transfer</MenuItem>
+                  <MenuItem value='Direct Debit'>Direct Debit</MenuItem>
                 </Select>
               </FormControl>
 
@@ -405,7 +405,7 @@ const submitDisabled = useMemo(() => {
             </Box>
 
             <Box sx={{ my: 2, display: 'flex', }}>
-              <FormControl sx={{ minWidth: 120 }} size="small" >
+              {/* <FormControl sx={{ minWidth: 120 }} size="small" >
                 <InputLabel id="demo-simple-select-label">Direct Debit</InputLabel>
                 <Select
                   sx={{ mr: 2, width: '250px', height: '40px' }}
@@ -418,7 +418,7 @@ const submitDisabled = useMemo(() => {
                   <MenuItem value='Yes'>Yes</MenuItem>
                   <MenuItem value='No'>No</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
 
                <FormControl sx={{ minWidth: 120 }} size="small" required>
                 <InputLabel id="demo-select-small-label">Payment Status</InputLabel>
