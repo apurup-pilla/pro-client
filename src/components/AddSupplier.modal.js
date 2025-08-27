@@ -6,9 +6,12 @@ import { useAuth } from '../context/AuthContext';
 function AddSupplierModal({ open, onClose }) {
   const [value, setValue] = useState('');
   const { authUser = {} } = useAuth()
+  const [loading, setLoading] = useState(false)
 
   const handleAdd = async() => {
+    setLoading(true)
     await createSupplier({ id : authUser?.ownedSiteId , Name : value })
+    setLoading(false)
     setValue('');
     onClose();
   };
@@ -33,7 +36,7 @@ function AddSupplierModal({ open, onClose }) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="">Cancel</Button>
-        <Button onClick={handleAdd} variant="contained" color="primary">Add</Button>
+        <Button onClick={handleAdd} variant="contained" disabled={loading} color="primary">Add</Button>
       </DialogActions>
     </Dialog>
   );
