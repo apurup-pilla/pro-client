@@ -250,7 +250,7 @@ const submitDisabled = useMemo(() => {
             </Box>
             <Box sx={{ my: 2, display: 'flex' }}>
               <Stack direction='row' >
-              <TextField
+              {/* <TextField
                 value={form.supplierName}
                 sx={{ width: '217px' }}
                 multiline
@@ -259,8 +259,26 @@ const submitDisabled = useMemo(() => {
                 required
                 onChange={(e) => handleChange('supplierName', e.target.value)}
                 label="Supplier Name"
-              />
-               <Tooltip title="Add New Item" arrow>
+              /> */}
+
+               <FormControl sx={{ minWidth: 120 }} size="small" required>
+                <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+                <Select
+                  sx={{ width: '217px', height: '40px' }}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.supplierName}
+                  label="Supplier"
+                  onChange={(event) => handleChange('supplierName', event.target.value)}
+                >
+                  {
+                    supplierList?.map(item =>
+                      <MenuItem value={item?.name}>{item?.name}</MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
+               <Tooltip title="Add Supplier" arrow>
                   <AddCircleOutlineOutlinedIcon
                     sx={{ mr: 2, mt: 1, ml: 1, cursor: 'pointer' }}
                     onClick={() => setOpenSupplierPopup(true)}
