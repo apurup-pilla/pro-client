@@ -165,7 +165,7 @@ const submitDisabled = useMemo(() => {
 
   const fetchSuppliers = async ()=>{
     const res = await getSuppliers(authUser?.ownedSiteId)
-    Array.isArray(res) ? setSupplierList(res) : sestSupplierList([]);
+    Array.isArray(res) ? setSupplierList(res) : setSupplierList([]);
   }
 
   useEffect(()=>{
