@@ -5,18 +5,24 @@ import {
   Typography,
   Box,
   FormLabel,
-  Autocomplete
+  Autocomplete,
+  Stack,
+  Tooltip
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { createInvoice, updateInvoice } from '../api/api';
+import { createInvoice, getSuppliers, updateInvoice } from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddSupplierModal from './AddSupplier.modal';
+
 
 const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selectedSite , setSelectedData}) => {
 
+  const [openSupplierPopup , setOpenSupplierPopup] = useState(false)
   const { authUser = {} } = useAuth()
   // let sitesObject = {}
   // authUser?.sites?.forEach(i => {
@@ -45,6 +51,7 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
   });
 
   console.log('form==', form)
+
 
 
   useEffect(() => {
@@ -153,6 +160,20 @@ const submitDisabled = useMemo(() => {
 }, [form]);
 
 
+  const [supplierList , setSupplierList] = useState([])
+  
+
+  const fetchSuppliers = async ()=>{
+    const res = await getSuppliers(authUser?.ownedSiteId)
+    Array.isArray(res) ? setSupplierList(res) : setSupplierList([]);
+  }
+
+  useEffect(()=>{
+    if(authUser?.ownedSiteId){
+      fetchSuppliers()
+    }
+  }, [authUser?.ownedSiteId])
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Dialog open={open} onClose={handleClose} handleClose={handleClose} maxWidth="sm" fullWidth
@@ -174,7 +195,6 @@ const submitDisabled = useMemo(() => {
           <Grid spacing={2}>
 
             <Box sx={{ my: 2, display: 'flex' }}>
-
               <TextField
                 label="Invoice Number"
                 sx={{ mr: 2, width: '250px' }}
@@ -183,8 +203,6 @@ const submitDisabled = useMemo(() => {
                 required
                 onChange={(e) => handleChange('invoiceNumber', e.target.value)}
               />
-
-
               <FormControl sx={{ minWidth: 120 }} size="small" required>
                 <InputLabel id="demo-simple-select-label">Invoice Type</InputLabel>
                 <Select
@@ -199,25 +217,7 @@ const submitDisabled = useMemo(() => {
                   <MenuItem value='Dummy'>Dummy</MenuItem>
                 </Select>
               </FormControl>
-              {/* 
-              <Autocomplete
-                freeSolo
-                options={authUser?.sites?.map(i => i?.name)}
-                value={form.siteId}
-                onChange={(event, newValue) => handleChange('siteId', newValue)}
-                onInputChange={(event, newInputValue) => handleChange('siteId', newInputValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Site Name"
-                    size="small"
-                    sx={{ width: '250px' }}
-                  />
-                )}
-              /> */}
-
             </Box>
-
             <Box >
               <DatePicker
                 label="Invoice Date"
@@ -233,7 +233,6 @@ const submitDisabled = useMemo(() => {
                   },
                 }}
               />
-
               <DatePicker
                 label="Due Date"
                 sx={{ width: '250px' }}
@@ -249,28 +248,11 @@ const submitDisabled = useMemo(() => {
                 }}
               />
             </Box>
-
-
             <Box sx={{ my: 2, display: 'flex' }}>
-              {/* <Autocomplete
-                freeSolo
-                options={['Amazon', 'Flipkart', 'Tata Consultancy', 'Infosys']}
-                value={form.supplierName}
-                onChange={(event, newValue) => handleChange('supplierName', newValue)}
-                onInputChange={(event, newInputValue) => handleChange('supplierName', newInputValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Supplier Name"
-                    size="small"
-                    sx={{ mr: 2, width: '250px' }}
-                  />
-                )}
-              /> */}
-
+              <Stack direction='row' >
               <TextField
                 value={form.supplierName}
-                sx={{ mr: 2, width: '250px' }}
+                sx={{ width: '217px' }}
                 multiline
                 minRows={1}
                 size="small"
@@ -278,27 +260,14 @@ const submitDisabled = useMemo(() => {
                 onChange={(e) => handleChange('supplierName', e.target.value)}
                 label="Supplier Name"
               />
-
-              {/* <Autocomplete
-                freeSolo
-                options={[
-                  'Office Supplies',
-                  'IT Equipment',
-                  'Logistics',
-                  'Maintenance',
-                ]}
-                value={form.accountHead}
-                onChange={(event, newValue) => handleChange('accountHead', newValue)}
-                onInputChange={(event, newInputValue) => handleChange('accountHead', newInputValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Account Head"
-                    size="small"
-                    sx={{ width: '250px' }}
+               <Tooltip title="Add New Item" arrow>
+                  <AddCircleOutlineOutlinedIcon
+                    sx={{ mr: 2, mt: 1, ml: 1, cursor: 'pointer' }}
+                    onClick={() => setOpenSupplierPopup(true)}
                   />
-                )}
-              /> */}
+                </Tooltip>
+
+              </Stack>
               <TextField
                 value={form.accountHead}
                 sx={{ mr: 2, width: '250px' }}
@@ -309,9 +278,6 @@ const submitDisabled = useMemo(() => {
                 label="Account Head"
               />
             </Box>
-
-
-
             <Box sx={{ my: 2, display: 'flex' }}>
               <TextField
                 label="Description"
@@ -465,6 +431,7 @@ const submitDisabled = useMemo(() => {
           <Button onClick={handleSubmit} disabled={submitDisabled} variant="contained" color="primary">{selectedData ? 'Edit' : 'Add'}</Button>
         </DialogActions>
       </Dialog>
+      <AddSupplierModal open={openSupplierPopup} onClose={()=>{ setOpenSupplierPopup(false) ; fetchSuppliers()}} />
     </LocalizationProvider>
   );
 };

@@ -65,3 +65,23 @@ export const uploadInvoicePdf = async (invoiceId, formData) => {
     throw error;
   }
 };
+
+export const getSuppliers = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/Suppliers/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Fetching Suppliers  failed:', error);
+  }
+};
+
+
+export const createSupplier = async ({id , Name}) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/Suppliers/${id}`, {Name});
+    return response.data;
+  } catch (error) {
+    console.error('Creating Suppliers failed:', error);
+ 
+  }
+};
