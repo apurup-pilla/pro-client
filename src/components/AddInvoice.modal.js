@@ -260,8 +260,23 @@ const submitDisabled = useMemo(() => {
                 onChange={(e) => handleChange('supplierName', e.target.value)}
                 label="Supplier Name"
               /> */}
+              <Autocomplete
+                options={supplierList?.map(i => i?.name)}
+                value={form.supplierName || ''}
+                onChange={(event) => handleChange('supplierName', event.target.value)}
+                disableClearable
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Supplier"
+                    size="small"
+                    sx={{ width: '217px' }}
+                    required
+                  />
+                )}
+              /> 
 
-               <FormControl sx={{ minWidth: 120 }} size="small" required>
+               {/* <FormControl sx={{ minWidth: 120 }} size="small" required>
                 <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
                 <Select
                   sx={{ width: '217px', height: '40px' }}
@@ -277,7 +292,7 @@ const submitDisabled = useMemo(() => {
                     )
                   }
                 </Select>
-              </FormControl>
+              </FormControl> */}
                <Tooltip title="Add Supplier" arrow>
                   <AddCircleOutlineOutlinedIcon
                     sx={{ mr: 2, mt: 1, ml: 1, cursor: 'pointer' }}
