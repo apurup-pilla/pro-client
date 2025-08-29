@@ -263,7 +263,7 @@ const submitDisabled = useMemo(() => {
               <Autocomplete
                 options={supplierList?.map(i => i?.name)}
                 value={form.supplierName || ''}
-                onChange={(event) => handleChange('supplierName', event.target.value)}
+                onChange={(event, newValue) => handleChange('supplierName', newValue)}
                 disableClearable
                 renderInput={(params) => (
                   <TextField
