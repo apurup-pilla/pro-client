@@ -396,6 +396,7 @@ const submitDisabled = useMemo(() => {
                   onChange={(event) => handleChange('paymentType', event.target.value)}
                 >
                   <MenuItem value='Bank Transfer'>Bank Transfer</MenuItem>
+                  <MenuItem value='Cash'>Cash</MenuItem>
                   <MenuItem value='Direct Debit'>Direct Debit</MenuItem>
                 </Select>
               </FormControl>
