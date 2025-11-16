@@ -1,6 +1,7 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
+import 'dayjs/locale/en-gb';
 import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -158,6 +159,23 @@ function InvoicesPage() {
     window.open(formatedUrl, "_blank");
   }
 
+  const totals = invoicesData.reduce(
+    (acc, row) => {
+      acc.amount += Number(row.amount) || 0;
+      acc.gst += Number(row.gst) || 0;
+      acc.nonGSTAmount += Number(row.nonGSTAmount) || 0;
+      acc.totalAmount += Number(row.totalAmount) || 0;
+      return acc;
+    },
+    {
+      amount: 0,
+      gst: 0,
+      nonGSTAmount: 0,
+      totalAmount: 0,
+    }
+  );
+
+
 
   const columns = [
     { accessorKey: 'invoiceId', header: 'Invoice ID', size: 100, },
@@ -169,18 +187,22 @@ function InvoicesPage() {
     },
     {
       accessorKey: 'invoiceDate', header: 'Invoice Date', size: 100,
+      accessorFn: (row) => new Date(row.invoiceDate),
       Cell: ({ row }) => {
         const value = row.original.invoiceDate;
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
-      }
+      },
+      filterVariant: 'date-range',
     },
     { accessorKey: 'invoiceNumber', header: 'Invoice Number', size: 100, },
     {
       accessorKey: 'dueDate', header: 'Due Date', size: 100,
+      accessorFn: (row) => new Date(row.dueDate),
       Cell: ({ row }) => {
         const value = row.original.dueDate;
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
-      }
+      },
+      filterVariant: 'date-range',
     },
     { accessorKey: 'supplierName', header: 'Supplier Name', size: 150, },
     { accessorKey: 'accountHead', header: 'Account Head', size: 150, },
@@ -191,6 +213,7 @@ function InvoicesPage() {
         Amount <br />(AUD)
       </>),
       size: 60,
+      Footer: () => <strong> {totals?.amount?.toFixed(2)}</strong>
     },
     {
       accessorKey: 'nonGSTAmount',
@@ -198,6 +221,7 @@ function InvoicesPage() {
         Non GST Amount <br />(AUD)
       </>),
       size: 60,
+      Footer: () => <strong> {totals?.nonGSTAmount?.toFixed(2)}</strong>
     },
     {
       accessorKey: 'gst',
@@ -205,6 +229,7 @@ function InvoicesPage() {
         GST <br />(AUD)
       </>),
       size: 60,
+      Footer: () => <strong> {totals?.gst?.toFixed(2)}</strong>
     },
     {
       accessorKey: 'totalAmount',
@@ -212,13 +237,16 @@ function InvoicesPage() {
         Total Amount<br />(AUD)
       </>),
       size: 60,
+      Footer: () => <strong> {totals?.totalAmount?.toFixed(2)}</strong>
     },
     {
       accessorKey: 'paymentDate', header: 'Payment Date', size: 100,
+      accessorFn: (row) => new Date(row.dueDate),
       Cell: ({ row }) => {
         const value = row.original.paymentDate;
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
-      }
+      },
+      filterVariant: 'date-range',
     },
     { accessorKey: 'paymentType', header: 'Payment Type', size: 100, },
     { accessorKey: 'paymentStatus', header: 'Payment Status', size: 100, },
@@ -275,7 +303,7 @@ function InvoicesPage() {
             //   </>
             //   :
 
-              <div>-</div>
+            <div>-</div>
 
           )}
         </>
@@ -303,8 +331,8 @@ function InvoicesPage() {
               >
                 <CloudUploadOutlinedIcon fontSize="small" />
               </IconButton>
-              <input 
-              type="file" 
+              <input
+                type="file"
                 accept="application/pdf, image/jpeg, image/jpg"
                 style={{ display: "none" }}
                 ref={(el) => (fileInputRefs.current[row.original.invoiceId] = el)}
@@ -339,12 +367,16 @@ function InvoicesPage() {
     columns,
     // data: [],
     data: invoicesData,
-    enableSorting: false,
-    enablePagination: false,
+    enableSorting: true,
+    enablePagination: true,
     enableDensityToggle: false,
     enableHiding: true,
     enableColumnActions: false,
+    enableTableFooter: true,
     initialState: {
+      pagination: {
+        pageSize: 20,
+      },
       columnVisibility: {
         siteName: false,
         invoiceId: false,
@@ -449,7 +481,9 @@ function InvoicesPage() {
 
         </Box>
         <Box >
-          <MaterialReactTable table={table} />
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+            <MaterialReactTable table={table} />
+          </LocalizationProvider>
         </Box>
       </Box>
       <AddInvoiceModal
