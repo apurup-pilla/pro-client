@@ -159,22 +159,6 @@ function InvoicesPage() {
     window.open(formatedUrl, "_blank");
   }
 
-  const totals = invoicesData.reduce(
-    (acc, row) => {
-      acc.amount += Number(row.amount) || 0;
-      acc.gst += Number(row.gst) || 0;
-      acc.nonGSTAmount += Number(row.nonGSTAmount) || 0;
-      acc.totalAmount += Number(row.totalAmount) || 0;
-      return acc;
-    },
-    {
-      amount: 0,
-      gst: 0,
-      nonGSTAmount: 0,
-      totalAmount: 0,
-    }
-  );
-
 
 
   const columns = [
@@ -416,6 +400,25 @@ function InvoicesPage() {
 
   })
 
+
+  const filteredRows = table.getRowModel().rows;
+
+  const totals = filteredRows.reduce(
+    (acc, row) => {
+      const r = row.original;
+      acc.amount += Number(r.amount) || 0;
+      acc.gst += Number(r.gst) || 0;
+      acc.nonGSTAmount += Number(r.nonGSTAmount) || 0;
+      acc.totalAmount += Number(r.totalAmount) || 0;
+      return acc;
+    },
+    {
+      amount: 0,
+      gst: 0,
+      nonGSTAmount: 0,
+      totalAmount: 0,
+    }
+  );
 
 
   const [range, setRange] = useState({ startDate: null, endDate: null });
