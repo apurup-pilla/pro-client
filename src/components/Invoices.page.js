@@ -225,7 +225,7 @@ function InvoicesPage() {
     },
     {
       accessorKey: 'paymentDate', header: 'Payment Date', size: 100,
-      accessorFn: (row) => new Date(row.dueDate),
+      accessorFn: (row) => new Date(row.paymentDate),
       Cell: ({ row }) => {
         const value = row.original.paymentDate;
         return value ? format(new Date(value), 'dd/MM/yyyy') : '';
@@ -401,7 +401,7 @@ function InvoicesPage() {
   })
 
 
-  const filteredRows = table.getRowModel().rows;
+  const filteredRows = table.getFilteredRowModel().rows;
 
   const totals = filteredRows.reduce(
     (acc, row) => {
