@@ -88,23 +88,23 @@ const AddInvoiceModal = ({ open, handleClose, selectedData, fetchInvoices, selec
 
       if (field === 'amount') {
         const amount = Number(value);
-        const gst = (amount * 10)/100;
+        const gst = ((amount * 10)/100).toFixed(2);
         const nonGSTAmount = Number(prev.nonGSTAmount)
         updated.gst = gst || 0;
-        updated.totalAmount = amount + gst + nonGSTAmount;
+        updated.totalAmount = (amount + gst + nonGSTAmount).toFixed(2);
       }
 
       else if (field === 'gst') {
         const gst = Number(value);
         const amount = Number(prev.amount);
         const nonGSTAmount = Number(prev.nonGSTAmount)
-        updated.totalAmount = amount + gst + nonGSTAmount;
+        updated.totalAmount = (amount + gst + nonGSTAmount).toFixed(2);
       }
 
       else if (field === 'nonGSTAmount') {
         const gst = Number(prev.gst);
         const amount = Number(prev.amount);
-        updated.totalAmount = amount + gst + Number(value);
+        updated.totalAmount = (amount + gst + Number(value)).toFixed(2);
       }
 
       return updated;
@@ -397,6 +397,7 @@ const submitDisabled = useMemo(() => {
                 >
                   <MenuItem value='Bank Transfer'>Bank Transfer</MenuItem>
                   <MenuItem value='Cash'>Cash</MenuItem>
+                  <MenuItem value='Cash'>Credit Card</MenuItem>
                   <MenuItem value='Direct Debit'>Direct Debit</MenuItem>
                 </Select>
               </FormControl>

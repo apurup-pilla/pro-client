@@ -115,7 +115,7 @@ function InvoicesPage() {
 
     const file = e.target.files[0];
 
-    if (!file || !["application/pdf", "image/jpeg", "image/jpg"].includes(file.type)) {
+    if (!file || !["application/pdf", "image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
       alert("Please upload a valid PDF or JPEG file.");
       return;
     }
